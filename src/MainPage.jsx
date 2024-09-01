@@ -1,23 +1,54 @@
-
+import React from 'react';
+import Ripples from 'react-ripples';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 export default function MainPage() {
+    const rippleRef = React.useRef(null);
+
+    const handleMouseMove = (event) => {
+        const ripple = rippleRef.current;
+        console.log('Mouse move event:', event);
+        if (ripple) {
+            console.log('Ripple instance:', ripple);
+            const rect = ripple.container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            ripple.createRipple({ pageX: x, pageY: y });
+        }
+    };
     return (
-        <Box sx={{ position: 'relative', height: '100vh', width: '100vw' }}>
-            {/* 背景图片 */}
-            <Box
-                component="img"
-                src="src/peakpx.jpg"
-                alt="Peak Image"
-                sx={{
-                    width: '100vw',
-                    height: 'auto',
-                    maxHeight: '100vh',
-                    objectFit: 'cover',
-                }}
-            />
+
+        <Box sx={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}>
+
+            {/* 使用 react-ripples 实现水波效果 */}
+            <Ripples color="rgba(255, 255, 255, 0.3)" during={1000}>
+                <Box
+                    component="img"
+                    src="src/peakpx.jpg"
+                    alt="Peak Image"
+                    sx={{
+                        width: '100vw',
+                        height: 'auto',
+                        maxHeight: '100vh',
+                        objectFit: 'cover',
+                    }}
+                />
+            </Ripples>
+
+            {/*/!* 背景图片 *!/*/}
+            {/*<Box*/}
+            {/*    component="img"*/}
+            {/*    src="src/peakpx.jpg"*/}
+            {/*    alt="Peak Image"*/}
+            {/*    sx={{*/}
+            {/*        width: '100vw',*/}
+            {/*        height: 'auto',*/}
+            {/*        maxHeight: '100vh',*/}
+            {/*        objectFit: 'cover',*/}
+            {/*    }}*/}
+            {/*/>*/}
 
             {/* 半透明遮罩 */}
             <Box
