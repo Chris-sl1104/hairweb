@@ -33,7 +33,7 @@ export default function Welcome() {
                             margin: {xs: "1rem", md: "2rem"}
                         }}
                     >
-                        <br/> Welcome<br/><br/><br/>
+                        <br/> Welcome<br/><br/>
                     </Typography>
                     <Typography
                         variant="body1"
@@ -67,8 +67,8 @@ export default function Welcome() {
                         alt="Welcome"
                         sx={{
                             width: '100%',
-                            height: 'auto',  // 小屏幕下高度自动，大屏幕下固定为300px
-                            objectFit: 'contain',
+                            height: 'cover',  // 小屏幕下高度自动，大屏幕下固定为300px
+                            objectFit: 'cover',
                             padding: { xs: '1rem', md: '2rem' },  // 设置内边距
 
                             maxWidth: '100%', // 限制图片的最大宽度不超过父容器的宽度
