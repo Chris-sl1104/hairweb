@@ -1,0 +1,15 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap');
+
+.font-antic-didone {
+    font-family: 'Antic Didone', serif;
+    font-size: 18px; /* 根据需要调整字号 */
+    font-weight: 100;
+    font-style: oblique;
+
+}
+
+.welcomeClass{
+    background-color: black;
+}
+

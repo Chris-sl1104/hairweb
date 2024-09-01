@@ -30,7 +30,7 @@ export default function MainPage() {
                     alt="Peak Image"
                     sx={{
                         width: '100vw',
-                        height: 'auto',
+                        height: '100vh',
                         maxHeight: '100vh',
                         objectFit: 'cover',
                     }}
@@ -80,10 +80,16 @@ export default function MainPage() {
                     variant="h3"
                     sx={{
                         marginBottom: 2,
-                        fontSize: { xs: '3.7rem', sm: '4rem', md: '4.2rem', lg:"4.5rem" },
+                        fontSize: { xs: '2.5rem', sm: '4.2rem', md: '4.2rem', lg:"4.5rem" },
                     }}
                 >
-                    Hair Salon <Box component="span" sx={{ display: { sm: 'block', md: 'inline' } }}>@Fitzroy</Box>
+                    <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
+                        Hair Salon
+                    </Box>
+                    <Box component="span"
+                         sx={{ display: { sx: 'block', md: 'inline' } }}>
+                        @Fitzroy
+                    </Box>
                 </Typography>
                 <Box>
                     <Button
