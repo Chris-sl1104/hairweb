@@ -81,6 +81,14 @@ export default function EmailList() {
                         maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
                         width: '90%', // 使得输入框在小屏幕时也不会超过100%宽度
                         boxSizing: 'border-box', // 包含padding在宽度内
+                        '& label.Mui-focused': {
+                            color: 'black',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderColor: 'black',
+                            }
+                        }
                     }}
                 />
 
@@ -96,6 +104,14 @@ export default function EmailList() {
                         maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
                         width: '90%', // 使得输入框在小屏幕时也不会超过100%宽度
                         boxSizing: 'border-box', // 包含padding在宽度内
+                        '& label.Mui-focused': {
+                            color: 'black',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderColor: 'black',
+                            }
+                        }
                     }}
                 />
 
@@ -111,6 +127,14 @@ export default function EmailList() {
                         maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
                         width: '90%', // 使得输入框在小屏幕时也不会超过100%宽度
                         boxSizing: 'border-box', // 包含padding在宽度内
+                        '& label.Mui-focused': {
+                            color: 'black',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderColor: 'black',
+                            }
+                        }
                     }}
                 />
 
