@@ -11,14 +11,17 @@ export default function About() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minHeight: '100vh',
+                margin: 0,      // 确保没有外部 margin
+                padding: 0,
                 /*padding: { xs: '20px', md: '40px' },*/
             }}
         >
             <Grid
                 container
-                spacing={2}
+                spacing={0}
                 direction={{ xs: 'column', md: 'row' }} // 小屏幕垂直排列，大屏幕水平排列
                 alignItems="center"
+
             >
                 <Grid item xs={12} md={6}>
                     <Box
