@@ -21,7 +21,7 @@ export default function Review() {
     const setMaxWidth = (isSmallScreen, { boxDirection }) => {
         if (boxDirection === 'left') {
             if (isSmallScreen) {
-                return '90%'; // 小屏幕时，占满宽度
+                return '100%'; // 小屏幕时，占满宽度
             } else {
                 return '50%'; // 大屏幕时，占50%宽度
             }
