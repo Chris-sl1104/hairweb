@@ -4,6 +4,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import './Welcome.css';
 import { Typography, Box } from '@mui/material';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // 引入播放图标
 
 export default function VideoShow() {
     const [videoPlayed, setVideoPlayed] = useState(Array(12).fill(false));
@@ -70,7 +71,7 @@ export default function VideoShow() {
                 Instagram Videos
             </Typography>
 
-    <Box sx={{flexGrow: 1, p: 2}}>
+    <Box sx={{flexGrow: 1, p: {xs: 1, xm: 3, md: 4, lg: 5}}}>
     <Grid container spacing={0}>
                     {videoUrls.map((videoUrl, index) => (
                         <Grid
@@ -100,21 +101,53 @@ export default function VideoShow() {
                                         }}
                                     />
                                 ) : (
-                                    <CardMedia
-                                        component="img"
-                                        image={placeholderImage}
-                                        title="Click to Play Video"
-                                        onClick={() => handleImageClick(index)}
-                                        sx={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover',
-                                            cursor: 'pointer',
-                                        }}
-                                    />
+                                    <div>
+                                        <CardMedia
+                                            component="img"
+                                            image={placeholderImage}
+                                            title="Click to Play Video"
+                                            onClick={() => handleImageClick(index)}
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                        {/* 播放图标 */}
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)',
+                                                zIndex: 1, // 保证图标在图片上方
+                                                color: 'white',
+                                                opacity: 1,
+                                            }}
+                                        >
+                                            <PlayArrowIcon
+                                                sx={{
+                                                    fontSize: '4rem', // 设置图标大小
+                                                    opacity: 0.9, // 确保图标不会过度透明
+                                                    transition: 'all 0.3s ease', // 添加过渡效果
+                                                    cursor: 'pointer', // 鼠标悬停时显示手型光标
+                                                    '&:hover': {
+                                                        color: 'rgb(255,241,0)', // 悬停时改变图标颜色
+
+                                                        opacity: 1,
+                                                    },
+
+                                                }}
+                                                onClick={() => handleImageClick(index)}
+                                            />
+                                        </Box>
+                                    </div>
+
+
                                 )}
                             </Card>
                         </Grid>

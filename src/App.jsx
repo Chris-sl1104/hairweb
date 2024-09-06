@@ -7,6 +7,9 @@ import EmailList from "./EmailList.jsx"
 import About from "./About.jsx"
 import VideoShow from "./VideoShow.jsx"
 import "./Welcome.css"
+import About2 from "./About2.jsx"
+import Zitzroy from "./Zitzroy.jsx"
+import Review from "./Review.jsx"
 
 function App() {
   /*const [count, setCount] = useState(0)*/
@@ -18,7 +21,11 @@ function App() {
           <Welcome />
           <EmailList />
           <About />
-              <VideoShow />
+          {/*<VideoShow />*/}
+          <About2 />
+          <Zitzroy />
+          <Review />
+
           <h1> hihihi</h1>
           <h1> hihihi</h1><h1> hihihi</h1><h1> hihihi</h1>
           <h1> hihihi</h1>
