@@ -21,13 +21,13 @@ export default function Review() {
     const setMaxWidth = (isSmallScreen, { boxDirection }) => {
         if (boxDirection === 'left') {
             if (isSmallScreen) {
-                return '100%'; // 小屏幕时，占满宽度
+                return '90%'; // 小屏幕时，占满宽度
             } else {
                 return '50%'; // 大屏幕时，占50%宽度
             }
         } else {
             if (isSmallScreen) {
-                return '100%'; // 小屏幕时，占满宽度
+                return '90%'; // 小屏幕时，占满宽度
             } else {
                 return '75%'; // 大屏幕时，占50%宽度
             }
@@ -40,7 +40,7 @@ export default function Review() {
             sx={{
                 position: 'relative',
                 width: '100vw',
-                height: '68vh',
+                height: 'auto',
                 backgroundImage: `url(src/Shampoo.jpg)`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
@@ -48,7 +48,7 @@ export default function Review() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: { xs: '0 20px', sm: '0 40px' },
+                padding: { xs: '50px 0px', sm: '80px 0px' },
                 overflow: 'hidden',
                 boxSizing: 'border-box',
             }}
@@ -65,6 +65,37 @@ export default function Review() {
                     zIndex: 0,
                 }}
             />
+            <Grid
+                container
+                direction="column"
+                alignItems="center"
+                sx={{
+                    zIndex: 1,
+                    textAlign: 'center',
+                    color: 'white',
+                    marginRight: { xs: '0', md: '5%' },
+                }}
+            >
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontSize: { xs: '4rem', sm: '5rem', md: '7rem', lg: '9rem' },
+                        marginBottom: '1vh',
+                    }}
+                >
+                    Testimonials
+                </Typography>
+
+                <Typography
+                    variant="h4"
+                    sx={{
+                        marginBottom: '5vh',
+                        fontSize: { xs: '1rem', md: '2rem', lg: '3rem' },
+                        fontWeight: { sm: 200, md: 300 },
+                    }}
+                >
+                    Our reviews are second to none
+                </Typography>
 
             {/* 内容部分 */}
             <Grid
@@ -76,43 +107,27 @@ export default function Review() {
                 sx={{
                     width: '100%',
                     zIndex: 1,
-                    padding: isSmallScreen ? '0 20px' : '0', // 在小屏幕时为Grid容器增加左右padding，防止框子贴到屏幕边缘
+                    padding: isSmallScreen ? '0 5vh' : '0', // 在小屏幕时为Grid容器增加左右padding，防止框子贴到屏幕边缘
+                    paddingRight: { xs: '5vw', sm: '3vw', md: '0vw' }, // 只在小屏幕时添加右边 padding
+                    transition: 'all 0.5s ease', // 添加动画过渡效果
                 }}
             >
 
-                {/* 左侧部分 */}
+
+            {/* 左侧部分 */}
                 <Grid item xs={12} md={4}> {/* 设置 xs={12} 和 md={6} 使其在大屏时各占50% */}
                     <Box
                         sx={{
-                            padding: '20px',
+                            transition: 'all 0.5s ease',
+                            padding: '6%',
                             backgroundColor: 'rgba(255, 255, 255, 0.8)', // 半透明背景
                             borderRadius: '8px',
                             minHeight: '150px', // 保证初始高度一致
-                            maxHeight: isExpanded ? 'none' : '150px', // 展开时取消最大高度限制
+                            maxHeight: isExpanded ? '1000px' : '150px', // 展开时取消最大高度限制
                             display: 'flex',
                             width: '100%',
                             maxWidth: setMaxWidth( isSmallScreen, {boxDirection: "left"}),
                             margin: 'auto',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            //maxWidth: {sm: "100%", md: '70%', lg:"50%", xl: "40%"}, // 占满父容器宽度
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -125,7 +140,7 @@ export default function Review() {
                                 color: 'black',
                                 textAlign: 'center',
                                 fontSize: { xs: '1.5rem', md: '2rem' },
-                                marginBottom: '16px',
+                                marginBottom: '3px',
                             }}
                         >
                             Google Reviews
@@ -135,7 +150,8 @@ export default function Review() {
                             sx={{
                                 color: 'black',
                                 textAlign: 'center',
-                                fontSize: { xs: '1rem', md: '1.25rem' },
+                                fontWeight: 'normal',
+                                fontSize: { xs: '1.3rem', md: '1.5rem' },
                             }}
                         >
                             5.0 / 5.0
@@ -164,11 +180,12 @@ export default function Review() {
                 <Grid item xs={12} md={6}> {/* 设置 xs={12} 和 md={6} 使其在大屏时各占50% */}
                     <Box
                         sx={{
-                            padding: '20px',
+                            transition: 'all 0.5s ease',
+                            padding: '4%',
                             backgroundColor: 'rgba(255, 255, 255, 0.8)',
                             borderRadius: '8px',
                             minHeight: '150px',
-                            maxHeight: isExpanded ? 'none' : '150px', // 控制初始高度
+                            maxHeight: isExpanded ? '1000px' : '150px', // 控制初始高度
                             width: '100%', // 占满父容器宽度
                             maxWidth: setMaxWidth( isSmallScreen, {boxDirection: "right"}),
                             margin: 'auto',
@@ -176,6 +193,7 @@ export default function Review() {
                             flexDirection: 'column',
                             alignSelf: 'center',
                             alignItems: 'center',
+                            overflow: 'hidden',
                             justifyContent: 'center',
                             flexGrow: 1,
                         }}
@@ -183,6 +201,7 @@ export default function Review() {
                         <Typography
                             variant="h5"
                             sx={{
+                                transition: 'all 0.5s ease',
                                 color: 'black',
                                 textAlign: 'center',
                                 fontSize: { xs: '1.5rem', md: '2rem' },
@@ -195,6 +214,7 @@ export default function Review() {
                             <Typography
                                 variant="body1"
                                 sx={{
+                                    transition: 'all 0.5s ease',
                                     color: 'black',
                                     textAlign: 'center',
                                     fontSize: { xs: '1rem', md: '1.25rem' },
@@ -230,6 +250,7 @@ export default function Review() {
 
                     </Box>
                 </Grid>
+            </Grid>
             </Grid>
         </Box>
     );
