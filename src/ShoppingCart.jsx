@@ -52,7 +52,7 @@ const ShoppingCart = () => {
                     sx: {
                         width: { xs: '70vw', sm: '400px' },
                         maxHeight: '70vh',
-                        mt: 8,
+                        mt: 10,
                         borderRadius: '30px',
                         padding: 2,
                         boxShadow: 5,

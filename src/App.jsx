@@ -11,9 +11,9 @@ import About2 from "./About2.jsx"
 import Zitzroy from "./Zitzroy.jsx"
 import Review from "./Review.jsx"
 import Footer from "./Footer.jsx"
+import Shopping from "./Shopping.jsx"
 
 function App() {
-  /*const [count, setCount] = useState(0)*/
 
   return (
       <div className="welcomeClass">
@@ -21,6 +21,7 @@ function App() {
           <MainPage />
           <Welcome />
           <EmailList />
+          <Shopping />
           <About />
           <VideoShow />
           <About2 />

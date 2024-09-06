@@ -78,7 +78,7 @@ function ResponsiveAppBar() {
                         textDecoration: 'none',
                     }}
                 >
-                    Lieu's Hair Salon
+                    Kieu's Hair Salon
                 </Typography>
 
                 {/* 在电脑尺寸下显示导航菜单项 */}
