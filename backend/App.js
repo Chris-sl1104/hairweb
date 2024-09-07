@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 const Item = require('./models/Item'); // 引入 Item 模型
 const User = require('./models/User'); // 引入 User 模型
 const cors = require('cors');
-
+require('dotenv').config();  // 加载 .env 文件中的环境变量
 
 const app = express();
+
+// 允许所有来源访问 API
+app.use(cors());
+
 app.use(express.json()); // 解析 JSON 请求
-app.use(cors()); // 允许所有来源访问 API
 
 // 连接 MongoDB
 mongoose.connect('mongodb://localhost:27017/shoppingDB')
@@ -25,6 +28,12 @@ app.post('/items', async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: '添加商品失败', error });
     }
+});
+
+// 获取 API Key 并通过 API 返回
+app.get('/api/get-maps-api-key', (req, res) => {
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;  // 从环境变量获取 API Key
+    res.json({ apiKey });
 });
 
 // 获取所有商品
@@ -60,4 +69,5 @@ app.get('/users', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`服务器正在运行在端口 ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`服务器正在运行在端口 ${PORT}`));
+

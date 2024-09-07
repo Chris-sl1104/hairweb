@@ -12,6 +12,13 @@ const items = [
     { name: 'Shampoo', price: 12.99, image: 'backend/models/shampoo.webp' },
     { name: 'Conditioner', price: 15.99, image: 'backend/models/conditioner.webp' },
     { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
+    { name: 'Hair Oil', price: 9.99, image: 'backend/models/hair-oil.webp' },
     { name: 'Hair Brush', price: 8.99, image: 'backend/models/hair-brush.jpg' },
 ];
 

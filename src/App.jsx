@@ -12,6 +12,7 @@ import Zitzroy from "./Zitzroy.jsx"
 import Review from "./Review.jsx"
 import Footer from "./Footer.jsx"
 import Shopping from "./Shopping.jsx"
+import Map from "./Map.jsx"
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <MainPage />
           <Welcome />
           <EmailList />
+          <Map />
           <Shopping />
           <About />
           <VideoShow />
