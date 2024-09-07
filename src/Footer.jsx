@@ -29,12 +29,9 @@ export default function Footer() {
                         Address
                     </Typography>
                     <Typography variant="body2">
-                        Level 1, 296 Brunswick Street
-                        <br />
-                        (entrance via Johnston Street)
-                        <br />
-                        Fitzroy VIC 3065{' '}
-                        <LocationOnIcon sx={{ color: '#FF4081', verticalAlign: 'middle' }} />
+                        <LocationOnIcon sx={{ color: '#ff0505', verticalAlign: 'middle' }} />
+                        33 Rose St, Fitzroy
+
                         <br />
                         <a href="tel:+61394151717" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
                             (03) 9415 1717
@@ -78,12 +75,12 @@ export default function Footer() {
                 sx={{
                     marginTop: '20px',
                     textAlign: 'center',
-                    paddingTop: '20px',
-                    paddingBottom: '20px',
+                    padding: '20px',
                 }}
             >
                 <Typography variant="body2" sx={{ marginBottom: '10px', color: '#E1E1E1' }}>
-                    We acknowledge the Wurundjeri Woi Wurrung people of the Kulin Nation as the Traditional Custodians of the land and pay respect to their Elders past, present, and emerging.
+                    We respectfully acknowledge the Wurundjeri People, and their Elders past and present,
+                    who are the Traditional Owners of the land.
                 </Typography>
 
                 {/* Indigenous Flags */}

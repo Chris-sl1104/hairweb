@@ -1,54 +1,61 @@
-import React from 'react';
-import Ripples from 'react-ripples';
-import Box from '@mui/material/Box';
+import React, { useState } from 'react';
+import {Box, useMediaQuery } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 export default function MainPage() {
-    const rippleRef = React.useRef(null);
+    // 使用 useMediaQuery 来判断屏幕尺寸是否为手机尺寸（假设小于600px为手机尺寸）
+    const isMobile = useMediaQuery('(max-width: 600px)');
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false); // 跟踪视频加载状态
 
-    const handleMouseMove = (event) => {
-        const ripple = rippleRef.current;
-        console.log('Mouse move event:', event);
-        if (ripple) {
-            console.log('Ripple instance:', ripple);
-            const rect = ripple.container.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            ripple.createRipple({ pageX: x, pageY: y });
-        }
+    // 视频加载完成后调用的函数
+    const handleVideoLoaded = () => {
+        setIsVideoLoaded(true);
     };
+
     return (
 
         <Box sx={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}>
 
-            {/* 使用 react-ripples 实现水波效果 */}
-            <Ripples color="rgba(255, 255, 255, 0.3)" during={1000}>
+            {/* Placeholder 图片，视频未加载完成时显示 */}
+            {!isVideoLoaded && (
                 <Box
                     component="img"
-                    src="src/peakpx.jpg"
-                    alt="Peak Image"
+                    src="src/coverVideoPlaceholder.png" // 占位符图片的路径
+                    alt="Loading Placeholder"
                     sx={{
-                        width: '100vw',
-                        height: '100vh',
-                        maxHeight: '100vh',
-                        objectFit: 'cover',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100vw', // 宽度全屏
+                        height: '100vh', // 高度全屏
+                        objectFit: 'cover', // 确保图片按比例填满屏幕
+                        zIndex: 0, // 确保图片在视频下层
+                        transform: isMobile ? 'none' : 'rotate(90deg) scaleX(-1)', // 电脑时旋转90度并水平翻转，手机时不旋转
                     }}
                 />
-            </Ripples>
+            )}
 
-            {/*/!* 背景图片 *!/*/}
-            {/*<Box*/}
-            {/*    component="img"*/}
-            {/*    src="src/peakpx.jpg"*/}
-            {/*    alt="Peak Image"*/}
-            {/*    sx={{*/}
-            {/*        width: '100vw',*/}
-            {/*        height: 'auto',*/}
-            {/*        maxHeight: '100vh',*/}
-            {/*        objectFit: 'cover',*/}
-            {/*    }}*/}
-            {/*/>*/}
+
+            <Box
+                component="video"
+                src="src/coverVideo.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                onLoadedData={handleVideoLoaded} // 视频加载完成时触发
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: isMobile ? 'translate(-50%, -50%)' : 'translate(-50%, -50%) ' +
+                        'rotate(90deg) scaleX(-1)', // 在旋转的同时保持居中
+                    width: isMobile ? '100vw' : '100vh',  // 手机时宽度全屏，电脑时高度全屏
+                    height: isMobile ? '100vh' : '100vw', // 手机时高度全屏，电脑时宽度全屏
+                    objectFit: 'cover', // 确保视频填满整个容器
+                }}
+            />
 
             {/* 半透明遮罩 */}
             <Box
