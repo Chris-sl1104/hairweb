@@ -17,23 +17,67 @@ app.use(express.json()); // 解析 JSON 请求
 app.use(bodyParser.json());
 
 // 连接 MongoDB
-mongoose.connect('mongodb://localhost:27017/shoppingDB')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shoppingDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
     .then(() => console.log('MongoDB 连接成功'))
     .catch((err) => console.error('MongoDB 连接错误:', err));
-
 
 
 // 创建 Nodemailer 传输器，连接到邮件服务器（例如 Gmail）
 const transporter = nodemailer.createTransport({
     service: 'gmail', // 使用 Gmail，可以替换为其他邮件服务
     auth: {
-        user: process.env.EMAIL_USER, //  Gmail 地址
-        pass: process.env.EMAIL_PASS, //  Gmail 应用专用密码
+        user: process.env.EMAIL_USER, // Gmail 地址
+        pass: process.env.EMAIL_PASS, // Gmail 应用专用密码
     },
 });
 
+const RECAPTCHA_V2_SECRET_KEY = process.env.RECAPTCHA_V2_SECRET_KEY;
+
+// 邮件发送逻辑
 app.post('/send-email', async (req, res) => {
-    const { firstName, lastName, emailAddress } = req.body;
+    const { firstName, lastName, emailAddress, recaptchaToken, recaptchaTokenV2 } = req.body;
+
+    // 验证 reCAPTCHA v2 token
+    try {
+        const recaptchaV2Response = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+            params: {
+                secret: RECAPTCHA_V2_SECRET_KEY,
+                response: recaptchaTokenV2,
+            },
+        });
+
+        if (!recaptchaV2Response.data.success) {
+            return res.status(400).json({ message: 'reCAPTCHA v2 validation failed' });
+        }
+    } catch (error) {
+        console.error('Error verifying reCAPTCHA v2:', error);
+        return res.status(500).json({ message: 'Error verifying reCAPTCHA v2' });
+    }
+
+    // 如果需要 reCAPTCHA 验证，可以添加以下代码
+    if (!recaptchaToken) {
+        return res.status(400).json({ message: 'reCAPTCHA token is missing' });
+    }
+
+    // 验证 reCAPTCHA token
+    try {
+        const recaptchaResponse = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+            params: {
+                secret: process.env.RECAPTCHA_SECRET_KEY, // 你的 reCAPTCHA 密钥
+                response: recaptchaToken,
+            },
+        });
+
+        if (!recaptchaResponse.data.success || recaptchaResponse.data.score < 0.5) {
+            return res.status(400).json({ message: 'Failed reCAPTCHA verification' });
+        }
+    } catch (error) {
+        console.error('reCAPTCHA verification failed:', error);
+        return res.status(500).json({ message: 'Error verifying reCAPTCHA' });
+    }
 
     // 配置发送给客户的邮件
     const mailOptionsToCustomer = {
@@ -89,45 +133,6 @@ The Hair Salon Team
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 添加新商品
 app.post('/items', async (req, res) => {
     const { name, price, image } = req.body;
@@ -178,6 +183,6 @@ app.get('/users', async (req, res) => {
     }
 });
 
+// 启动服务器
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => console.log(`服务器正在运行在端口 ${PORT}`));
-

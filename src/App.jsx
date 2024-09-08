@@ -14,10 +14,12 @@ import Footer from "./Footer.jsx"
 import Shopping from "./Shopping.jsx"
 import Map from "./Map.jsx"
 
+
 function App() {
 
   return (
       <div className="welcomeClass">
+
           <Home/>
           <MainPage />
           <Welcome />

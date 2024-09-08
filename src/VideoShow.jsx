@@ -4,22 +4,22 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import './Welcome.css';
 import { Typography, Box } from '@mui/material';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // 引入播放图标
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // Import the play icon
 
 export default function VideoShow() {
-    const [videoPlayed, setVideoPlayed] = useState(Array(12).fill(false));
-    const videoRefs = useRef([]); // 存储视频元素的引用
+    const [videoPlayed, setVideoPlayed] = useState(Array(12).fill(false)); // Array to track the play status of each video
+    const videoRefs = useRef([]); // Store references to video elements
 
     const handleImageClick = (index) => {
         const updatedPlayedStatus = [...videoPlayed];
         updatedPlayedStatus[index] = true;
         setVideoPlayed(updatedPlayedStatus);
 
-        // 等待视频加载完成后进入全屏模式
+        // Wait until the video loads to enter fullscreen mode
         const videoElement = videoRefs.current[index];
         if (videoElement) {
             videoElement.play().then(() => {
-                // 确保视频已经开始播放后进入全屏
+                // Ensure the video has started playing before entering fullscreen
                 if (videoElement.requestFullscreen) {
                     videoElement.requestFullscreen();
                 } else if (videoElement.mozRequestFullScreen) {
@@ -30,13 +30,14 @@ export default function VideoShow() {
                     videoElement.msRequestFullscreen(); // IE/Edge
                 }
             }).catch((err) => {
-                console.error('Error attempting to play the video:', err);
+                console.error('Error attempting to play the video:', err); // Handle any errors during video playback
             });
         }
     };
 
+    // Example video URLs, you can replace these with actual URLs
     const videoUrls = [
-        'src/videoplayback.mp4', // 示例视频路径
+        'src/videoplayback.mp4',
         'src/videoplayback.mp4',
         'src/videoplayback.mp4',
         'src/videoplayback.mp4',
@@ -50,8 +51,8 @@ export default function VideoShow() {
         'src/videoplayback.mp4',
     ];
 
-    const placeholderImage =
-        'https://gratisography.com/wp-content/uploads/2024/01/gratisography-cyber-kitty-800x525.jpg';
+    // Placeholder image used for the video thumbnail before playing
+    const placeholderImage = 'https://gratisography.com/wp-content/uploads/2024/01/gratisography-cyber-kitty-800x525.jpg';
 
     return (
         <div className="welcomeClass">
@@ -59,25 +60,25 @@ export default function VideoShow() {
                 variant="h1"
                 className="font-antic-didone"
                 sx={{
-                    marginTop: { xs: '50px', md: '70px' , lg: "90px"}, // 顶部 margin
-                    marginBottom: { xs: '50px', md: '70px' , lg: '80px'}, // 底部 margin
-                    marginLeft: { xs: '15px', md: '35px' }, // 左侧 margin
-                    marginRight: '15px', // 右侧 margin
-                    fontSize: { xs: '40px', sm: "50px", md: '60px', lg: "70px"}, // 根据屏幕大小调整字体
+                    marginTop: { xs: '50px', md: '70px', lg: '90px' }, // Top margin adjustments for various screen sizes
+                    marginBottom: { xs: '50px', md: '70px', lg: '80px' }, // Bottom margin adjustments
+                    marginLeft: { xs: '15px', md: '35px' }, // Left margin adjustments
+                    marginRight: '15px', // Fixed right margin
+                    fontSize: { xs: '40px', sm: '50px', md: '60px', lg: '70px' }, // Responsive font sizes
                     textAlign: 'left',
-                    fontFamily: '"Antic Didone", serif', // 直接在 sx 中设置字体
+                    fontFamily: '"Antic Didone", serif', // Directly setting the font in sx
                 }}
             >
                 Instagram Videos
             </Typography>
 
-    <Box sx={{flexGrow: 1, p: {xs: 1, xm: 3, md: 4, lg: 5}}}>
-    <Grid container spacing={0}>
+            <Box sx={{ flexGrow: 1, p: { xs: 1, xm: 3, md: 4, lg: 5 } }}>
+                <Grid container spacing={0}>
                     {videoUrls.map((videoUrl, index) => (
                         <Grid
                             item
-                            xs={6} // 小屏幕每行2个
-                            md={3} // 大屏幕每行4个
+                            xs={6} // 2 per row on small screens
+                            md={3} // 4 per row on medium and larger screens
                             key={index}
                             sx={{
                                 padding: '0',
@@ -87,7 +88,7 @@ export default function VideoShow() {
                                 {videoPlayed[index] ? (
                                     <Box
                                         component="video"
-                                        ref={(el) => (videoRefs.current[index] = el)} // 保存视频元素引用
+                                        ref={(el) => (videoRefs.current[index] = el)} // Save reference to the video element
                                         src={videoUrl}
                                         controls
                                         muted
@@ -97,7 +98,7 @@ export default function VideoShow() {
                                             left: 0,
                                             width: '100%',
                                             height: '100%',
-                                            objectFit: 'cover',
+                                            objectFit: 'cover', // Ensure the video fills the container properly
                                         }}
                                     />
                                 ) : (
@@ -114,40 +115,36 @@ export default function VideoShow() {
                                                 width: '100%',
                                                 height: '100%',
                                                 objectFit: 'cover',
-                                                cursor: 'pointer',
+                                                cursor: 'pointer', // Change cursor on hover
                                             }}
                                         />
-                                        {/* 播放图标 */}
+                                        {/* Play icon */}
                                         <Box
                                             sx={{
                                                 position: 'absolute',
                                                 top: '50%',
                                                 left: '50%',
-                                                transform: 'translate(-50%, -50%)',
-                                                zIndex: 1, // 保证图标在图片上方
+                                                transform: 'translate(-50%, -50%)', // Center the play icon
+                                                zIndex: 1, // Ensure the icon appears above the image
                                                 color: 'white',
                                                 opacity: 1,
                                             }}
                                         >
                                             <PlayArrowIcon
                                                 sx={{
-                                                    fontSize: '4rem', // 设置图标大小
-                                                    opacity: 0.9, // 确保图标不会过度透明
-                                                    transition: 'all 0.3s ease', // 添加过渡效果
-                                                    cursor: 'pointer', // 鼠标悬停时显示手型光标
+                                                    fontSize: '4rem', // Set the play icon size
+                                                    opacity: 0.9, // Ensure the icon is visible but not too opaque
+                                                    transition: 'all 0.3s ease', // Add a smooth transition effect
+                                                    cursor: 'pointer', // Pointer cursor on hover
                                                     '&:hover': {
-                                                        color: 'rgb(255,241,0)', // 悬停时改变图标颜色
-
+                                                        color: 'rgb(255,241,0)', // Change the icon color on hover
                                                         opacity: 1,
                                                     },
-
                                                 }}
                                                 onClick={() => handleImageClick(index)}
                                             />
                                         </Box>
                                     </div>
-
-
                                 )}
                             </Card>
                         </Grid>
@@ -155,6 +152,5 @@ export default function VideoShow() {
                 </Grid>
             </Box>
         </div>
-
     );
 }

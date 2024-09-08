@@ -11,15 +11,15 @@ export default function About() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minHeight: '100vh',
-                margin: 0,      // 确保没有外部 margin
+                margin: 0,      // Ensure there's no external margin
                 padding: 0,
-                /*padding: { xs: '20px', md: '40px' },*/
+                /*padding: { xs: '20px', md: '40px' },*/  // Optional padding based on screen size (small screens: 20px, medium: 40px)
             }}
         >
             <Grid
                 container
                 spacing={0}
-                direction={{ xs: 'column', md: 'row' }} // 小屏幕垂直排列，大屏幕水平排列
+                direction={{ xs: 'column', md: 'row' }} // Vertical layout on small screens, horizontal on large screens
                 alignItems="center"
 
             >
@@ -36,7 +36,7 @@ export default function About() {
                                 fontFamily: 'Antic Didone, serif',
                                 fontWeight: 'bold',
                                 marginBottom: '20px',
-                                textAlign: { xs: 'center', md: 'left' }, // 小屏幕居中对齐，大屏幕左对齐
+                                textAlign: { xs: 'center', md: 'left' }, // Center-align text on small screens, left-align on large screens
                             }}
                         >
                             About Us
@@ -46,7 +46,7 @@ export default function About() {
                             className="font-antic-didone"
                             sx={{
                                 fontFamily: 'Antic Didone, serif',
-                                textAlign: { xs: 'center', md: 'left' }, // 小屏幕居中对齐，大屏幕左对齐
+                                textAlign: { xs: 'center', md: 'left' }, // Center-align text on small screens, left-align on large screens
                             }}
                         >
                             <p>
@@ -65,18 +65,18 @@ export default function About() {
                     <Box
                         sx={{
                             width: '100%',
-                            height: '100%', // 使Box的高度充满Grid项
-                            overflow: 'hidden', // 隐藏超出Box的部分
+                            height: '100%', // Ensures the Box fills the Grid item height
+                            overflow: 'hidden', // Hides the part of the image that exceeds the Box
                         }}
                     >
                         <Box
                             component="img"
-                            src="./src/About.jpg" // 请替换为实际图片URL
+                            src="./src/About.jpg" // Please replace with the actual image URL
                             alt="About Us"
                             sx={{
                                 width: '100%',
                                 height: '100%',
-                                objectFit: 'cover', // 使图片覆盖整个Box
+                                objectFit: 'cover', // Ensures the image covers the entire Box
                             }}
                         />
                     </Box>

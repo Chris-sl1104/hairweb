@@ -11,14 +11,14 @@ export default function About2() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minHeight: '40vh',
-                margin: 0,      // 确保没有外部 margin
+                margin: 0,      // Ensures there is no external margin
                 padding: 0,
             }}
         >
             <Grid
                 container
                 spacing={0}
-                direction={{ xs: 'column', md: 'row' }} // 小屏幕垂直排列，大屏幕水平排列
+                direction={{ xs: 'column', md: 'row' }} // Vertical layout for small screens, horizontal for larger screens
                 alignItems="center"
 
             >
@@ -35,7 +35,7 @@ export default function About2() {
                                 fontFamily: 'Antic Didone, serif',
                                 fontWeight: 'bold',
                                 marginBottom: '20px',
-                                textAlign: { xs: 'center', md: 'left' }, // 小屏幕居中对齐，大屏幕左对齐
+                                textAlign: { xs: 'center', md: 'left' }, // Center alignment for small screens, left alignment for larger screens
                             }}
                         >
                             Excellence is our culture.
@@ -53,13 +53,13 @@ export default function About2() {
                             className="font-antic-didone"
                             sx={{
                                 fontFamily: 'Antic Didone, serif',
-                                textAlign: { xs: 'center', md: 'left' }, // 小屏幕居中对齐，大屏幕左对齐
+                                textAlign: { xs: 'center', md: 'left' }, // Center alignment for small screens, left alignment for larger screens
                             }}
                         >
-                                Keeping up with the trends is not easy in today’s world.
-                                But here at Cream Melbourne, it’s what we thrive on.
-                                Our daily lives are spent keeping an eye on the media and the
-                                street, always at the cutting edge of what is in and what is out.
+                            Keeping up with the trends is not easy in today’s world.
+                            But here at Cream Melbourne, it’s what we thrive on.
+                            Our daily lives are spent keeping an eye on the media and the
+                            street, always at the cutting edge of what is in and what is out.
                         </Typography>
                     </Box>
                 </Grid>

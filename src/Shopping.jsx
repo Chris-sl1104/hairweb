@@ -7,115 +7,116 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 
-// 获取当前星期的函数
+// Function to get the current day of the week
 const getCurrentDay = () => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = new Date();
     return daysOfWeek[today.getDay()];
 };
 
-
 const Shopping = () => {
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [activeIndex, setActiveIndex] = useState(0); // 记录当前滑动的索引
-    const [quantities, setQuantities] = useState({}); // 用于存储每个商品的数量
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth); // 获取窗口宽度
-    const [currentDay, setCurrentDay] = useState('For Today');
+    const [items, setItems] = useState([]); // State to store the list of items
+    const [loading, setLoading] = useState(true); // State to handle loading
+    const [activeIndex, setActiveIndex] = useState(0); // Track the current swipe index
+    const [quantities, setQuantities] = useState({}); // Store the quantity of each item
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Get window width for responsive design
+    const [currentDay, setCurrentDay] = useState('For Today'); // Store the current day
 
     useEffect(() => {
-        // 获取当前星期并设置为 state
+        // Set the current day in the state
         const day = getCurrentDay();
         setCurrentDay(`this ${day}`);
     }, []);
 
-    // 加载商品数据
+    // Fetch items from the backend API
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await axios.get('http://192.168.0.108:5000/items'); // 确保后端运行并返回商品数据
-                setItems(response.data);
-                setLoading(false);
+                const response = await axios.get('http://192.168.0.108:5000/items'); // Ensure the backend is running and returning items
+                setItems(response.data); // Set the items from API
+                setLoading(false); // Set loading to false when data is fetched
             } catch (error) {
-                console.error('Error fetching items:', error);
-                setLoading(false);
+                console.error('Error fetching items:', error); // Handle errors when fetching items
+                setLoading(false); // Stop loading on error
             }
         };
 
         fetchItems();
     }, []);
 
-    // 监听窗口宽度变化
+    // Listen for window resize to update width
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
         window.addEventListener('resize', handleResize);
 
+        // Clean up event listener on component unmount
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
 
-    const maxItemsLg = 8;  // lg 尺寸下最多显示 8 个
-    const maxItemsMd = 6;  // md 尺寸下最多显示 6 个
-    const isLg = windowWidth >= 1200;
-    const isMd = windowWidth >= 900 && windowWidth < 1200;
+    const maxItemsLg = 8;  // Maximum items to display on large screens
+    const maxItemsMd = 6;  // Maximum items to display on medium screens
+    const isLg = windowWidth >= 1200; // Define large screen breakpoint
+    const isMd = windowWidth >= 900 && windowWidth < 1200; // Define medium screen breakpoint
 
-    // 控制商品数量
+    // Handle quantity change for items
     const handleQuantityChange = (id, increment) => {
         setQuantities((prev) => ({
             ...prev,
-            [id]: Math.max(1, (prev[id] || 1) + increment),
+            [id]: Math.max(1, (prev[id] || 1) + increment), // Ensure quantity doesn't go below 1
         }));
     };
 
-    // 如果正在加载，显示加载动画
+    // Display loading spinner if items are still being fetched
     if (loading) {
         return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;
     }
 
-    // 如果没有商品，显示提示
+    // Display a message if no items are available
     if (items.length === 0) {
         return <Typography variant="h6" align="center" sx={{ mt: 4 }}>No items available to display</Typography>;
     }
 
-    // 处理滑动
+    // Handle swipe next for mobile view
     const handleNext = () => {
         setActiveIndex((prevIndex) => (prevIndex + 1) % Math.ceil(items.length / 4));
     };
 
+    // Handle swipe previous for mobile view
     const handlePrev = () => {
         setActiveIndex((prevIndex) => (prevIndex - 1 + Math.ceil(items.length / 4)) % Math.ceil(items.length / 4));
     };
 
-    // 提取卡片渲染逻辑，减少重复代码
+    // Function to render each item card to avoid code duplication
     const renderCard = (item) => (
         <Card
             sx={{
                 boxShadow: 4,
                 borderRadius: 3,
                 transition: '0.3s',
-                '&:hover': { boxShadow: 8 },
-                background: 'linear-gradient(135deg, #f0f0f0, #fafafa)',
+                '&:hover': { boxShadow: 8 }, // Add hover effect
+                background: 'linear-gradient(135deg, #f0f0f0, #fafafa)', // Gradient background
             }}
         >
             <CardMedia
                 component="img"
                 height="150"
-                image={`/${item.image}`}
+                image={`/${item.image}`} // Item image
                 alt={item.name}
                 sx={{ objectFit: 'contain' }}
             />
             <CardContent>
                 <Typography gutterBottom variant="h6" component="div" sx={{ fontSize: { xs: '0.9rem' } }}>
-                    {item.name}
+                    {item.name} {/* Display item name */}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem' } }}>
-                    Price: ${item.price}
+                    Price: ${item.price} {/* Display item price */}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontSize: { xs: '0.6rem' } }}>
-                    {item.description?.substring(0, 60)}...
+                    {item.description?.substring(0, 60)}... {/* Display item description with a limit */}
                 </Typography>
             </CardContent>
             <CardActions sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -124,8 +125,8 @@ const Shopping = () => {
                         <Remove sx={{ fontSize: '0.8rem' }} />
                     </IconButton>
                     <TextField
-                        value={quantities[item.id] || 1}
-                        inputProps={{ readOnly: true, style: { textAlign: 'center', width: '.9rem' } }}
+                        value={quantities[item.id] || 1} // Display quantity
+                        inputProps={{ readOnly: true, style: { textAlign: 'center', width: '.9rem' } }} // Input box settings
                         variant="outlined"
                         size="small"
                         sx={{ mx: 1 }}
@@ -135,7 +136,7 @@ const Shopping = () => {
                     </IconButton>
                 </Box>
                 <IconButton color="primary" sx={{ padding: '4px' }}>
-                    <Badge badgeContent={quantities[item.id] || 0} color="secondary">
+                    <Badge badgeContent={quantities[item.id] || 0} color="secondary"> {/* Badge with quantity */}
                         <AddShoppingCartIcon sx={{ fontSize: '2rem' }} />
                     </Badge>
                 </IconButton>
@@ -143,12 +144,11 @@ const Shopping = () => {
         </Card>
     );
 
-    // 电脑端卡片布局
+    // Desktop layout logic, with sliding arrows for navigation
     const desktopLayout = (
         <Box sx={{ position: 'relative', padding: 2, overflow: 'hidden' }}>
             <IconButton
-                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10,
-                    transform: 'translateY(-50%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem', color: '#ffa83a' }}
                 onClick={handlePrev}
             >
                 <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -156,8 +156,8 @@ const Shopping = () => {
 
             <Grid container spacing={4} sx={{ padding: { sm: 3, md: 5, lg: 9, xl: 20 } }}>
                 {items.map((item, index) => {
-                    if (isLg && index >= maxItemsLg) return null;
-                    if (isMd && index >= maxItemsMd) return null;
+                    if (isLg && index >= maxItemsLg) return null; // Show a maximum of 8 items for large screens
+                    if (isMd && index >= maxItemsMd) return null; // Show a maximum of 6 items for medium screens
                     return (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
                             {renderCard(item)}
@@ -167,8 +167,7 @@ const Shopping = () => {
             </Grid>
 
             <IconButton
-                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10,
-                    transform: 'translateY(-50%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem', color: '#ffa83a' }}
                 onClick={handleNext}
             >
                 <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -176,12 +175,11 @@ const Shopping = () => {
         </Box>
     );
 
-    // 手机端滑块布局，调整为每行两列，两行共显示四个卡片
+    // Mobile layout with swipeable views
     const mobileLayout = (
         <Box sx={{ position: 'relative', padding: '20px 0', overflow: 'hidden', width: '100vw' }}>
             <IconButton
-                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10,
-                    transform: 'translateY(-25%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: '#ffa83a' }}
                 onClick={handlePrev}
             >
                 <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -192,7 +190,7 @@ const Shopping = () => {
                 onChangeIndex={setActiveIndex}
                 enableMouseEvents
                 style={{ overflow: 'hidden' }}
-                containerStyle={{ width: '92%', paddingTop: '20px', paddingBottom: '20px' }} // 设置上下留白
+                containerStyle={{ width: '92%', paddingTop: '20px', paddingBottom: '20px' }} // Set padding for swipe views
             >
                 {Array.from({ length: Math.ceil(items.length / 4) }).map((_, i) => (
                     <Box key={i} sx={{
@@ -200,7 +198,7 @@ const Shopping = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         width: '100%',
-                        boxSizing: 'border-box'  // 确保 padding 不会让内容溢出
+                        boxSizing: 'border-box'  // Ensure padding does not overflow
                     }}>
                         <Grid container spacing={2}>
                             {items.slice(i * 4, i * 4 + 4).map((item) => (
@@ -214,8 +212,7 @@ const Shopping = () => {
             </SwipeableViews>
 
             <IconButton
-                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10,
-                    transform: 'translateY(-25%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: '#ffa83a' }}
                 onClick={handleNext}
             >
                 <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -223,35 +220,31 @@ const Shopping = () => {
         </Box>
     );
 
-
     return (
-        <Box sx={{ paddingBottom: 20 }}> {/* 包裹整个页面的容器 */}
-            {/* 分割线 */}
-            <Divider sx={{ backgroundColor: '#666666',
-                marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto' }} />
+        <Box sx={{ paddingBottom: 20 }}> {/* Wrap the whole page container */}
+            <Divider sx={{ backgroundColor: '#666666', marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto' }} />
 
-            {/* 添加顶部内容 */}
+            {/* Add the header content */}
             <Box sx={{ paddingTop: 4, textAlign: 'center' }}>
                 <Typography
                     variant="h4"
                     sx={{
                         color: '#ffa726',
-                        fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem', lg: '3rem', xl: '3.5rem' } // 字体大小随屏幕尺寸变化
+                        fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem', lg: '3rem', xl: '3.5rem' } // Responsive font sizes
                     }}
                 >
                     Ready to treat yourself {currentDay}?
                 </Typography>
-
 
                 <Typography
                     variant="body1"
                     sx={{
                         color: '#fff',
                         marginTop: 2,
-                        fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem', lg: '1.6rem', xl: '1.8rem' } // 使 body1 字体大小响应式
+                        fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem', lg: '1.6rem', xl: '1.8rem' } // Responsive body1 text
                     }}
                 >
-                   - Explore our latest collections below -
+                    - Explore our latest collections below -
                 </Typography>
 
                 <Typography
@@ -259,15 +252,14 @@ const Shopping = () => {
                     sx={{
                         color: '#ffa726',
                         marginTop: 1,
-                        fontSize: { xs: '0.8rem', sm: '1rem', md: '1.2rem', lg: '1.4rem', xl: '1.6rem' } // 使 body2 字体大小响应式
+                        fontSize: { xs: '0.8rem', sm: '1rem', md: '1.2rem', lg: '1.4rem', xl: '1.6rem' } // Responsive body2 text
                     }}
                 >
                     Don't miss out on special offers!
                 </Typography>
             </Box>
 
-
-            {/* Existing layout for mobile and desktop */}
+            {/* Layout for mobile and desktop */}
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
                 {mobileLayout}
             </Box>
@@ -276,7 +268,6 @@ const Shopping = () => {
             </Box>
         </Box>
     );
-
 };
 
 export default Shopping;

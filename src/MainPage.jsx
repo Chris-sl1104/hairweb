@@ -6,32 +6,32 @@ import Button from '@mui/material/Button';
 export default function MainPage() {
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-    const videoRef = useRef(null); // 用于引用视频元素
+    const videoRef = useRef(null); // Reference to the video element
 
-    // 视频加载完成后调用的函数
+    // Function to be called when the video has finished loading
     const handleVideoLoaded = () => {
         setIsVideoLoaded(true);
     };
 
-    // 使用 useEffect 尝试在组件加载后手动播放视频
+    // useEffect to try playing the video automatically when the component mounts
     useEffect(() => {
         const videoElement = videoRef.current;
         if (videoElement) {
-            videoElement.muted = true; // 确保视频静音
+            videoElement.muted = true; // Ensure the video is muted
             videoElement.play().catch((error) => {
                 console.error("Autoplay was prevented:", error);
-                // 处理自动播放失败
+                // Handle the failure of autoplay
             });
         }
     }, []);
 
     return (
         <Box sx={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}>
-            {/* Placeholder 图片，视频未加载完成时显示 */}
+            {/* Placeholder image, displayed while the video is loading */}
             {!isVideoLoaded && (
                 <Box
                     component="img"
-                    src="src/coverVideoPlaceholder.png" // 占位符图片的路径
+                    src="src/coverVideoPlaceholder.png" // Path to the placeholder image
                     alt="Loading Placeholder"
                     sx={{
                         position: 'absolute',
@@ -46,10 +46,10 @@ export default function MainPage() {
                 />
             )}
 
-            {/* 视频元素 */}
+            {/* Video element */}
             <Box
                 component="video"
-                ref={videoRef} // 通过 ref 获取视频元素
+                ref={videoRef} // Get the video element through ref
                 src="src/coverVideo.mp4"
                 autoPlay
                 muted
@@ -70,7 +70,7 @@ export default function MainPage() {
                 }}
             />
 
-            {/* 半透明遮罩 */}
+            {/* Semi-transparent overlay */}
             <Box
                 sx={{
                     position: 'absolute',
@@ -84,7 +84,7 @@ export default function MainPage() {
                 }}
             />
 
-            {/* 中央内容 */}
+            {/* Central content */}
             <Box
                 sx={{
                     position: 'absolute',

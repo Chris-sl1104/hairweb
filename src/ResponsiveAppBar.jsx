@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import { keyframes } from '@mui/system';
 import ShoppingCart from './ShoppingCart';
 
-// 定义动画效果
+// Define animation effects
 const fadeIn = keyframes`
     from {
         opacity: 0;
@@ -58,13 +58,13 @@ function ResponsiveAppBar() {
 
     return (
         <AppBar position="fixed" sx={{
-            backgroundColor: isTransparent ? 'transparent' : 'rgba(0, 0, 0, 0.8)',
+            backgroundColor: isTransparent ? 'transparent' : 'rgba(0, 0, 0, 0.8)',  // Change background color when scrolling
             transition: 'background-color 0.3s ease',
-            boxShadow: isTransparent ? 'none' : undefined,
+            boxShadow: isTransparent ? 'none' : undefined,  // Remove box shadow when on top
             zIndex: (theme) => theme.zIndex.drawer + 1
         }}>
             <Toolbar>
-                {/* 左侧LOGO */}
+                {/* Left-side logo */}
                 <Typography
                     variant="h6"
                     component="a"
@@ -81,7 +81,7 @@ function ResponsiveAppBar() {
                     Kieu's Hair Salon
                 </Typography>
 
-                {/* 在电脑尺寸下显示导航菜单项 */}
+                {/* Display navigation items on larger screens */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
                     {pages.map((page) => (
                         <Button
@@ -94,7 +94,7 @@ function ResponsiveAppBar() {
                     ))}
                 </Box>
 
-                {/* 菜单按钮 (移动设备下显示) */}
+                {/* Menu button (visible on smaller screens) */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                     <IconButton size="large" aria-label="menu" onClick={handleOpenNavMenu} sx={{ color: 'white' }}>
                         <MenuIcon />
@@ -111,7 +111,7 @@ function ResponsiveAppBar() {
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',  // Fullscreen menu for mobile devices
                             animation: `${fadeIn} 0.5s ease`,
                             '& .MuiPaper-root': {
                                 width: '100vw',
@@ -125,12 +125,12 @@ function ResponsiveAppBar() {
                             },
                         }}
                     >
-                        {/* 关闭按钮 */}
+                        {/* Close button for menu */}
                         <IconButton onClick={handleCloseNavMenu} sx={{ alignSelf: 'flex-end', color: 'white' }}>
                             <CloseIcon sx={{ fontSize: 40, animation: `${slideDown} 0.5s ease` }} />
                         </IconButton>
 
-                        {/* 菜单项 (移动设备) */}
+                        {/* Navigation items for mobile view */}
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, flexGrow: 1 }}>
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu} sx={{ width: '100%', animation: `${fadeIn} 0.8s ease` }}>
@@ -141,7 +141,7 @@ function ResponsiveAppBar() {
                                             fontSize: '2rem',
                                             padding: '10px 0',
                                             '&:hover': {
-                                                color: '#f50057',
+                                                color: '#f50057',  // Hover effect for menu items
                                                 transform: 'scale(1.1)',
                                                 transition: 'transform 0.2s ease-in-out'
                                             },
@@ -153,7 +153,7 @@ function ResponsiveAppBar() {
                             ))}
                         </Box>
 
-                        {/* 社交图标 */}
+                        {/* Social media icons */}
                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 5 }}>
                             <IconButton href="https://instagram.com" target="_blank" sx={{ color: 'white' }}>
                                 <InstagramIcon sx={{ fontSize: 40 }} />
@@ -163,8 +163,8 @@ function ResponsiveAppBar() {
                 </Box>
 
                 <ShoppingCart />
-                {/* // 右侧购物车图标
-                <Box sx={{ flexGrow: 0, display: 'flex', gap: 2 }}>
+                {/* // Shopping cart icon on the right side */}
+                {/* <Box sx={{ flexGrow: 0, display: 'flex', gap: 2 }}>
                     <IconButton href="/cart" sx={{ color: 'white' }}>
                         <LocalGroceryStoreIcon />
                     </IconButton>

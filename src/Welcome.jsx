@@ -10,14 +10,14 @@ export default function Welcome() {
             sx={{
                 flexGrow: 1,
                 padding: 2,
-                backgroundColor: 'black', // 设置背景颜色为黑色
-                color: 'white', // 设置文本颜色为白色，以便在黑色背景上清晰可见
+                backgroundColor: 'black', // Set the background color to black
+                color: 'white', // Set the text color to white for visibility against the black background
             }}
         >
             <Grid
                 container
                 spacing={2}
-                direction={{ xs: 'column', sm: 'column', md: 'row' }} // 小屏幕上下布局，大屏幕左右布局
+                direction={{ xs: 'column', sm: 'column', md: 'row' }} // Column layout for small screens, row layout for medium and larger screens
                 alignItems="center"
             >
                 <Grid item xs={12} md={6}>
@@ -26,10 +26,10 @@ export default function Welcome() {
                         component="h2"
                         className="font-antic-didone"
                         sx={{
-                            fontSize: {xs: '2rem', sm: '2.5rem', md: '3.5rem'},  // 不同屏幕下的字体大小
-                            fontFamily: 'Antic Didone, serif',  // 使用Antic Didone字体
-                            fontWeight: 400,  // 字体粗细
-                            lineHeight: 1.4,  // 行高
+                            fontSize: {xs: '2rem', sm: '2.5rem', md: '3.5rem'},  // Adjust font size for different screen sizes
+                            fontFamily: 'Antic Didone, serif',  // Use Antic Didone font
+                            fontWeight: 400,  // Set font weight to 400 (regular)
+                            lineHeight: 1.4,  // Line height for readability
                             margin: {xs: "1rem", md: "2rem"}
                         }}
                     >
@@ -38,9 +38,9 @@ export default function Welcome() {
                     <Typography
                         variant="body1"
                         sx={{
-                            fontSize: { xs: '1rem', sm: '1.2rem', md: '1.5rem' },  // 根据屏幕大小调整字体
-                            fontFamily: 'Antic Didone, serif',  // 使用Antic Didone字体
-                            lineHeight: 1.6,  // 行高
+                            fontSize: { xs: '1rem', sm: '1.2rem', md: '1.5rem' },  // Adjust font size based on screen size
+                            fontFamily: 'Antic Didone, serif',  // Use Antic Didone font
+                            lineHeight: 1.6,  // Increase line height for better readability
                             margin: {xs: "1rem", md: "2rem"}
                         }}
                     >
@@ -58,8 +58,8 @@ export default function Welcome() {
                     </Typography>
                 </Grid>
                 <Grid item xs={12} md={6} sx={{
-                    overflow: 'hidden', // 确保任何超出容器的内容被隐藏
-                    maxWidth: '100%', // 限制父容器的最大宽度不超过页面宽度
+                    overflow: 'hidden', // Ensure any overflow content is hidden
+                    maxWidth: '100%', // Limit the max width of the parent container to 100% of the page width
                 }}>
                     <Box
                         component="img"
@@ -67,12 +67,12 @@ export default function Welcome() {
                         alt="Welcome"
                         sx={{
                             width: '100%',
-                            height: 'cover',  // 小屏幕下高度自动，大屏幕下固定为300px
-                            objectFit: 'cover',
-                            padding: { xs: '1rem', md: '2rem' },  // 设置内边距
+                            height: 'cover',  // Automatically adjust height on small screens, fixed to 300px on larger screens
+                            objectFit: 'cover', // Maintain aspect ratio while filling the container
+                            padding: { xs: '1rem', md: '2rem' },  // Add padding around the image for different screen sizes
 
-                            maxWidth: '100%', // 限制图片的最大宽度不超过父容器的宽度
-                            boxSizing: 'border-box', // 确保padding被包含在宽度内
+                            maxWidth: '100%', // Limit the image's maximum width to the container's width
+                            boxSizing: 'border-box', // Include padding in the element's total width and height
                         }}
                     />
                 </Grid>

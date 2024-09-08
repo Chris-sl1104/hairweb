@@ -3,37 +3,36 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from "@mui/material/Button";
-import useMediaQuery from '@mui/material/useMediaQuery'; // 导入 useMediaQuery
+import useMediaQuery from '@mui/material/useMediaQuery'; // Import useMediaQuery for responsive design
 
 export default function Review() {
-    const [isExpanded, setIsExpanded] = useState(false); // 控制文本是否展开
+    const [isExpanded, setIsExpanded] = useState(false); // State to control text expansion
     const toggleExpand = () => {
-        setIsExpanded(!isExpanded); // 切换文本展开状态
+        setIsExpanded(!isExpanded); // Toggle text expansion state
     };
 
-    // 使用 useMediaQuery 进行响应式判断
-    const isSmallScreen = useMediaQuery('(max-width:960px)'); // 定义小于 960px 为小屏
+    // Use useMediaQuery to handle responsiveness
+    const isSmallScreen = useMediaQuery('(max-width:960px)'); // Define small screen as less than 960px
 
-    // 根据屏幕大小和 isExpanded 状态来决定布局方向
+    // Determine layout direction based on screen size and text expansion state
     const direction = isSmallScreen || isExpanded ? 'column' : 'row';
 
-    // 定义 setMaxWidth 函数
+    // Define setMaxWidth function
     const setMaxWidth = (isSmallScreen, { boxDirection }) => {
         if (boxDirection === 'left') {
             if (isSmallScreen) {
-                return '100%'; // 小屏幕时，占满宽度
+                return '100%'; // On small screens, take full width
             } else {
-                return '50%'; // 大屏幕时，占50%宽度
+                return '50%'; // On larger screens, take 50% width
             }
         } else {
             if (isSmallScreen) {
-                return '90%'; // 小屏幕时，占满宽度
+                return '90%'; // On small screens, take 90% width
             } else {
-                return '75%'; // 大屏幕时，占50%宽度
+                return '75%'; // On larger screens, take 75% width
             }
         }
     };
-
 
     return (
         <Box
@@ -53,7 +52,7 @@ export default function Review() {
                 boxSizing: 'border-box',
             }}
         >
-            {/* 半透明遮罩 */}
+            {/* Semi-transparent overlay */}
             <Box
                 sx={{
                     position: 'absolute',
@@ -97,160 +96,157 @@ export default function Review() {
                     Our reviews are second to none
                 </Typography>
 
-            {/* 内容部分 */}
-            <Grid
-                container
-                spacing={2}
-                direction={direction}  // 根据方向值动态设置
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    width: '100%',
-                    zIndex: 1,
-                    padding: isSmallScreen ? '0 5vh' : '0', // 在小屏幕时为Grid容器增加左右padding，防止框子贴到屏幕边缘
-                    paddingRight: { xs: '5vw', sm: '3vw', md: '0vw' }, // 只在小屏幕时添加右边 padding
-                    transition: 'all 0.5s ease', // 添加动画过渡效果
-                }}
-            >
+                {/* Content section */}
+                <Grid
+                    container
+                    spacing={2}
+                    direction={direction}  // Dynamically set direction based on state
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                        width: '100%',
+                        zIndex: 1,
+                        padding: isSmallScreen ? '0 5vh' : '0', // Add padding on small screens to prevent content touching screen edges
+                        paddingRight: { xs: '5vw', sm: '3vw', md: '0vw' }, // Only add right padding on small screens
+                        transition: 'all 0.5s ease', // Add smooth transition for layout changes
+                    }}
+                >
 
-
-            {/* 左侧部分 */}
-                <Grid item xs={12} md={4}> {/* 设置 xs={12} 和 md={6} 使其在大屏时各占50% */}
-                    <Box
-                        sx={{
-                            transition: 'all 0.5s ease',
-                            padding: '6%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)', // 半透明背景
-                            borderRadius: '8px',
-                            minHeight: '150px', // 保证初始高度一致
-                            maxHeight: isExpanded ? '1000px' : '150px', // 展开时取消最大高度限制
-                            display: 'flex',
-                            width: '100%',
-                            maxWidth: setMaxWidth( isSmallScreen, {boxDirection: "left"}),
-                            margin: 'auto',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexGrow: 1,
-                        }}
-                    >
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                color: 'black',
-                                textAlign: 'center',
-                                fontSize: { xs: '1.5rem', md: '2rem' },
-                                marginBottom: '3px',
-                            }}
-                        >
-                            Google Reviews
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                color: 'black',
-                                textAlign: 'center',
-                                fontWeight: 'normal',
-                                fontSize: { xs: '1.3rem', md: '1.5rem' },
-                            }}
-                        >
-                            5.0 / 5.0
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{
-                                backgroundColor: '#000000',
-                                color: 'white',
-                                padding: '10px 10px',
-                                borderRadius: '4px',
-                                marginBottom: '3px',
-                                maxWidth: '80%',
-                                width: '90%',
-                                boxSizing: 'border-box',
-                                alignSelf: 'center',
-                            }}
-                        >
-                            VIEW
-                        </Button>
-                    </Box>
-                </Grid>
-
-                {/* 右侧部分 */}
-                <Grid item xs={12} md={6}> {/* 设置 xs={12} 和 md={6} 使其在大屏时各占50% */}
-                    <Box
-                        sx={{
-                            transition: 'all 0.5s ease',
-                            padding: '4%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            borderRadius: '8px',
-                            minHeight: '150px',
-                            maxHeight: isExpanded ? '1000px' : '150px', // 控制初始高度
-                            width: '100%', // 占满父容器宽度
-                            maxWidth: setMaxWidth( isSmallScreen, {boxDirection: "right"}),
-                            margin: 'auto',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignSelf: 'center',
-                            alignItems: 'center',
-                            overflow: 'hidden',
-                            justifyContent: 'center',
-                            flexGrow: 1,
-                        }}
-                    >
-                        <Typography
-                            variant="h5"
+                    {/* Left section */}
+                    <Grid item xs={12} md={4}> {/* Set xs={12} and md={6} to take 50% width on large screens */}
+                        <Box
                             sx={{
                                 transition: 'all 0.5s ease',
-                                color: 'black',
-                                textAlign: 'center',
-                                fontSize: { xs: '1.5rem', md: '2rem' },
-                                marginBottom: '5px',
+                                padding: '6%',
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+                                borderRadius: '8px',
+                                minHeight: '150px', // Ensure consistent initial height
+                                maxHeight: isExpanded ? '1000px' : '150px', // Remove height limit when expanded
+                                display: 'flex',
+                                width: '100%',
+                                maxWidth: setMaxWidth(isSmallScreen, { boxDirection: "left" }),
+                                margin: 'auto',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexGrow: 1,
                             }}
                         >
-                            Latest Reviews
-                        </Typography>
-                        <Box sx={{ maxWidth: '600px', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    color: 'black',
+                                    textAlign: 'center',
+                                    fontSize: { xs: '1.5rem', md: '2rem' },
+                                    marginBottom: '3px',
+                                }}
+                            >
+                                Google Reviews
+                            </Typography>
                             <Typography
                                 variant="body1"
+                                sx={{
+                                    color: 'black',
+                                    textAlign: 'center',
+                                    fontWeight: 'normal',
+                                    fontSize: { xs: '1.3rem', md: '1.5rem' },
+                                }}
+                            >
+                                5.0 / 5.0
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    backgroundColor: '#000000',
+                                    color: 'white',
+                                    padding: '10px 10px',
+                                    borderRadius: '4px',
+                                    marginBottom: '3px',
+                                    maxWidth: '80%',
+                                    width: '90%',
+                                    boxSizing: 'border-box',
+                                    alignSelf: 'center',
+                                }}
+                            >
+                                VIEW
+                            </Button>
+                        </Box>
+                    </Grid>
+
+                    {/* Right section */}
+                    <Grid item xs={12} md={6}> {/* Set xs={12} and md={6} for responsive layout */}
+                        <Box
+                            sx={{
+                                transition: 'all 0.5s ease',
+                                padding: '4%',
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                borderRadius: '8px',
+                                minHeight: '150px',
+                                maxHeight: isExpanded ? '1000px' : '150px', // Control initial height
+                                width: '100%',
+                                maxWidth: setMaxWidth(isSmallScreen, { boxDirection: "right" }),
+                                margin: 'auto',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignSelf: 'center',
+                                alignItems: 'center',
+                                overflow: 'hidden',
+                                justifyContent: 'center',
+                                flexGrow: 1,
+                            }}
+                        >
+                            <Typography
+                                variant="h5"
                                 sx={{
                                     transition: 'all 0.5s ease',
                                     color: 'black',
                                     textAlign: 'center',
-                                    fontSize: { xs: '1rem', md: '1.25rem' },
-                                    overflow: 'hidden', // 隐藏溢出内容
-                                    textOverflow: 'ellipsis', // 添加省略号
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: isExpanded ? 'none' : 2, // 控制显示2行，点击展开时显示完整
-                                    WebkitBoxOrient: 'vertical',
-                                    whiteSpace: 'normal',
+                                    fontSize: { xs: '1.5rem', md: '2rem' },
+                                    marginBottom: '5px',
                                 }}
                             >
-                                "Best hair salon in town, highly recommended! This is a place where you can enjoy a great atmosphere, professional service, and walk out feeling amazing. Their attention to detail is second to none."
+                                Latest Reviews
                             </Typography>
-
-                            {/* View More/ View Less 按钮 */}
-                            <Button onClick={toggleExpand}
-                                    variant="contained"
-                                    color="primary"
+                            <Box sx={{ maxWidth: '600px', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <Typography
+                                    variant="body1"
                                     sx={{
-                                        backgroundColor: '#000000',
-                                        color: 'white',
-                                        padding: '10px 10px',
-                                        borderRadius: '4px',
-                                        marginBottom: '3px',
-                                        maxWidth: '80%',
-                                        width: '90%',
-                                        boxSizing: 'border-box',
-                                    }}>
-                                {isExpanded ? 'View Less' : 'View More'}
-                            </Button>
+                                        transition: 'all 0.5s ease',
+                                        color: 'black',
+                                        textAlign: 'center',
+                                        fontSize: { xs: '1rem', md: '1.25rem' },
+                                        overflow: 'hidden', // Hide overflowing content
+                                        textOverflow: 'ellipsis', // Add ellipsis for overflowed text
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: isExpanded ? 'none' : 2, // Show only 2 lines, expand fully on toggle
+                                        WebkitBoxOrient: 'vertical',
+                                        whiteSpace: 'normal',
+                                    }}
+                                >
+                                    "Best hair salon in town, highly recommended! This is a place where you can enjoy a great atmosphere, professional service, and walk out feeling amazing. Their attention to detail is second to none."
+                                </Typography>
+
+                                {/* View More / View Less button */}
+                                <Button onClick={toggleExpand}
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{
+                                            backgroundColor: '#000000',
+                                            color: 'white',
+                                            padding: '10px 10px',
+                                            borderRadius: '4px',
+                                            marginBottom: '3px',
+                                            maxWidth: '80%',
+                                            width: '90%',
+                                            boxSizing: 'border-box',
+                                        }}>
+                                    {isExpanded ? 'View Less' : 'View More'}
+                                </Button>
+                            </Box>
                         </Box>
-
-
-                    </Box>
+                    </Grid>
                 </Grid>
-            </Grid>
             </Grid>
         </Box>
     );

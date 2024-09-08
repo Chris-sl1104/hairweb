@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -20,69 +20,104 @@ export default function EmailList() {
         emailAddress: '',
     });
 
-    const [formErrors, setFormErrors] = useState({}); // 用于存储表单错误状态
-    const [isSubmitting, setIsSubmitting] = useState(false); // 用于追踪提交状态
-    const [dialogOpen, setDialogOpen] = useState(false); // 控制 Dialog 是否显示
-    const [dialogContent, setDialogContent] = useState(''); // 控制 Dialog 的内容
+    const [formErrors, setFormErrors] = useState({}); // Used to store form error status
+    const [isSubmitting, setIsSubmitting] = useState(false); // Tracks form submission status
+    const [dialogOpen, setDialogOpen] = useState(false); // Controls whether the dialog is displayed
+    const [dialogContent, setDialogContent] = useState(''); // Stores the content for the dialog
+    const [v2Token, setV2Token] = useState(''); // Stores the reCAPTCHA v2 token
 
+    // Load reCAPTCHA v2 script
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "https://www.google.com/recaptcha/api.js";
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+
+        // Listen for the reCAPTCHA v2 completion callback
+        window.onRecaptchaV2Success = (token) => {
+            setV2Token(token);  // Store the received token when the reCAPTCHA is completed
+        };
+
+        return () => {
+            document.body.removeChild(script);  // Cleanup the script when the component is unmounted
+        };
+    }, []);
+
+    // Handles form field changes
     const handleChange = (e) => {
         setFormData({
-            ...formData,
-            [e.target.id]: e.target.value,
+            ...formData,  // Spread operator to update form fields dynamically
+            [e.target.id]: e.target.value,  // Updates the field value based on input field ID
         });
     };
 
-    // 提交表单
+    // Handles form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 验证必填字段是否为空
+        // Validate that the required fields are not empty
         const errors = {};
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // email 格式验证
-        if (!formData.firstName) errors.firstName = 'First Name is required';
-        if (!formData.lastName) errors.lastName = 'Last Name is required';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email format validation regex
+        if (!formData.firstName) errors.firstName = 'First Name is required';  // Check if first name is empty
+        if (!formData.lastName) errors.lastName = 'Last Name is required';    // Check if last name is empty
         if (!formData.emailAddress) {
-            errors.emailAddress = 'Email Address is required';
+            errors.emailAddress = 'Email Address is required';  // Check if email is empty
         } else if (!emailRegex.test(formData.emailAddress)) {
-            errors.emailAddress = 'Please enter a valid email address';
+            errors.emailAddress = 'Please enter a valid email address';  // Validate email format
         }
 
         if (Object.keys(errors).length > 0) {
-            setFormErrors(errors); // 如果有错误，显示错误信息
+            setFormErrors(errors);  // If errors exist, display them
             return;
         }
 
-        setFormErrors({}); // 清空错误信息
-        setIsSubmitting(true); // 开始提交，显示加载动画
+        // Ensure reCAPTCHA v2 is completed
+        if (!v2Token) {
+            setDialogContent('Please complete the reCAPTCHA v2');  // Prompt user to complete reCAPTCHA
+            setDialogOpen(true);  // Open the dialog to display the message
+            return;
+        }
 
-        // 提交表单数据
+        setFormErrors({});  // Clear any previous error messages
+        setIsSubmitting(true);  // Set the submission state to true to show loading animation
+
         try {
+            // Perform reCAPTCHA enterprise validation
+            const token = await window.grecaptcha.enterprise.execute('6LfsEToqAAAAAMC8N5ActNXZ5Q6mUhywhF83ys39', { action: 'submit' });
+
+            // Submit form data along with the reCAPTCHA tokens
             const response = await fetch('http://192.168.0.108:5000/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,  // Form data: first name, last name, and email
+                    recaptchaTokenV2: v2Token,  // reCAPTCHA v2 token
+                    recaptchaToken: token,  // reCAPTCHA enterprise token
+                }),
             });
 
             if (response.ok) {
-                setDialogContent('You have successfully signed up!'); // 成功消息
-                setFormData({ firstName: '', lastName: '', emailAddress: '' }); // 清空表单
+                setDialogContent('You have successfully signed up!');  // Success message on successful sign-up
+                setFormData({ firstName: '', lastName: '', emailAddress: '' });  // Clear form fields after submission
             } else {
-                setDialogContent('There was an issue with your signup. Please try again.'); // 失败消息
+                setDialogContent('There was an issue with your signup. Please try again.');  // Error message on failure
             }
-            setDialogOpen(true); // 显示弹窗
+            setDialogOpen(true);  // Display dialog with the result
         } catch (error) {
             console.error('Error:', error);
-            setDialogContent('There was an error processing your request.'); // 错误消息
-            setDialogOpen(true); // 显示弹窗
+            setDialogContent('There was an error processing your request.');  // General error message
+            setDialogOpen(true);  // Display dialog with error message
         } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false);  // Reset the submission state after form handling completes
         }
     };
-    // 关闭弹窗的函数
+
+    // Function to close the dialog
     const handleDialogClose = () => {
-        setDialogOpen(false);
+        setDialogOpen(false);  // Set the dialog state to closed
     };
 
     return (
@@ -90,19 +125,19 @@ export default function EmailList() {
             sx={{
                 position: 'relative',
                 width: 'auto',
-                height: '100vh', // 设置为全屏高度
-                backgroundImage: `url(src/emailimg.png)`, // 背景图片路径
-                backgroundSize: 'cover', // 背景图片覆盖整个容器
+                height: '100vh', // Full viewport height
+                backgroundImage: `url(src/emailimg.png)`, // Background image path
+                backgroundSize: 'cover', // Make sure the background covers the whole container
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
                 display: 'flex',
-                alignItems: 'center', // 垂直居中内容
-                justifyContent: 'center', // 小屏幕下内容水平居中
-                padding: { xs: '0 20px', sm: '0 40px' }, // 为小屏幕和大屏幕设置不同的内边距
+                alignItems: 'center', // Vertically center content
+                justifyContent: 'center', // Horizontally center content on smaller screens
+                padding: { xs: '0 20px', sm: '0 40px' }, // Padding adjustments for different screen sizes
                 overflow: 'hidden'
             }}
         >
-            {/* 半透明遮罩 */}
+            {/* Semi-transparent overlay */}
             <Box
                 sx={{
                     position: 'absolute',
@@ -110,30 +145,29 @@ export default function EmailList() {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    backgroundColor: 'rgba(0, 0, 0, 0.4)', // 黑色半透明遮罩
+                    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Black semi-transparent overlay
                     zIndex: 0,
                 }}
             />
 
-            {/* 内容部分 */}
+            {/* Main content */}
             <Grid
                 container
                 direction="column"
-                alignItems="center" // 小屏幕下内容居中对齐
+                alignItems="center" // Align content to center on smaller screens
                 sx={{
                     zIndex: 1,
-                    maxWidth: '400px', // 限制内容最大宽度
-                    textAlign: 'center', // 文本居中对齐
+                    maxWidth: '400px', // Limit the max width of the content
+                    textAlign: 'center', // Center align the text
                     color: 'white',
-                    // 在大屏幕下向右偏移
-                    marginLeft: { xs: '0', md: '20%' }, // 小屏幕居中，大屏幕右移
+                    marginLeft: { xs: '0', md: '20%' }, // Center on small screens, shift right on larger screens
                 }}
             >
                 <Typography
                     variant="h4"
                     sx={{
                         fontWeight: 'bold',
-                        marginBottom: '20px', // 与描述文本的间距
+                        marginBottom: '20px', // Space between title and description
                     }}
                 >
                     Join our Mailing List
@@ -142,12 +176,13 @@ export default function EmailList() {
                 <Typography
                     variant="body1"
                     sx={{
-                        marginBottom: '40px', // 与输入框的间距
+                        marginBottom: '40px', // Space between description and input fields
                     }}
                 >
                     Sign up with your email address to receive news and updates.
                 </Typography>
 
+                {/* First Name input field */}
                 <TextField
                     id="firstName"
                     label="First Name"
@@ -155,15 +190,15 @@ export default function EmailList() {
                     fullWidth
                     value={formData.firstName}
                     onChange={handleChange}
-                    error={!!formErrors.firstName} // 如果有错误，显示红色边框
-                    helperText={formErrors.firstName} // 显示错误消息
+                    error={!!formErrors.firstName} // Display error styling if there is an error
+                    helperText={formErrors.firstName} // Show error message if any
                     sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)', // 背景半透明
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
                         borderRadius: '4px',
                         marginBottom: '10px',
-                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
-                        width: '90%', // 使得输入框在小屏幕时也不会超过100%宽度
-                        boxSizing: 'border-box', // 包含padding在宽度内
+                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
+                        width: '90%',
+                        boxSizing: 'border-box', // Include padding in the width
                         '& label.Mui-focused': {
                             color: 'black',
                         },
@@ -175,6 +210,7 @@ export default function EmailList() {
                     }}
                 />
 
+                {/* Last Name input field */}
                 <TextField
                     id="lastName"
                     label="Last Name"
@@ -182,15 +218,15 @@ export default function EmailList() {
                     fullWidth
                     value={formData.lastName}
                     onChange={handleChange}
-                    error={!!formErrors.lastName} // 如果有错误，显示红色边框
-                    helperText={formErrors.lastName} // 显示错误消息
+                    error={!!formErrors.lastName} // Display error styling if there is an error
+                    helperText={formErrors.lastName} // Show error message if any
                     sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)', // 背景半透明
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
                         borderRadius: '4px',
                         marginBottom: '10px',
-                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
-                        width: '90%', // 使得输入框在小屏幕时也不会超过100%宽度
-                        boxSizing: 'border-box', // 包含padding在宽度内
+                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
+                        width: '90%',
+                        boxSizing: 'border-box', // Include padding in the width
                         '& label.Mui-focused': {
                             color: 'black',
                         },
@@ -202,6 +238,7 @@ export default function EmailList() {
                     }}
                 />
 
+                {/* Email Address input field */}
                 <TextField
                     id="emailAddress"
                     label="Email Address"
@@ -209,15 +246,15 @@ export default function EmailList() {
                     fullWidth
                     value={formData.emailAddress}
                     onChange={handleChange}
-                    error={!!formErrors.emailAddress} // 如果有错误，显示红色边框
-                    helperText={formErrors.emailAddress} // 显示错误消息
+                    error={!!formErrors.emailAddress} // Display error styling if there is an error
+                    helperText={formErrors.emailAddress} // Show error message if any
                     sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)', // 背景半透明
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
                         borderRadius: '4px',
                         marginBottom: '20px',
-                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
-                        width: '90%', // 使得输入框在小屏幕时也不会超过100%宽度
-                        boxSizing: 'border-box', // 包含padding在宽度内
+                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
+                        width: '90%',
+                        boxSizing: 'border-box', // Include padding in the width
                         '& label.Mui-focused': {
                             color: 'black',
                         },
@@ -229,12 +266,50 @@ export default function EmailList() {
                     }}
                 />
 
-                {/* 在提交时显示加载动画 */}
+                {/* reCAPTCHA Container */}
+                <Box
+                    sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0)', // Transparent background
+                        borderRadius: '4px',
+                        marginBottom: '0px',
+                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
+                        width: '90%',
+                        boxSizing: 'border-box', // Include padding in the width
+                        '& label.Mui-focused': {
+                            color: 'black',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderColor: 'black',
+                            }
+                        }
+                    }}
+                >
+                    {/* reCAPTCHA widget */}
+                    <Box
+                        sx={{
+                            display: 'inline-block',
+                            maxWidth: '100%', // Ensure reCAPTCHA does not exceed container width
+                        }}
+                    >
+                        <div
+                            className="g-recaptcha"
+                            data-sitekey="6LcPYzoqAAAAANByR-t19h3vZImim9wQH7gVQLy0"
+                            data-callback="onRecaptchaV2Success"
+                            style={{
+                                transform: 'scale(0.80)',  // Scale down the reCAPTCHA widget
+                                transformOrigin: '0 0',   // Scale from the top-left corner
+                            }}
+                        ></div>
+                    </Box>
+                </Box>
+
+                {/* Submit button and loading animation */}
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
-                    disabled={isSubmitting} // 提交时禁用按钮
+                    disabled={isSubmitting} // Disable button when submitting
                     sx={{
                         backgroundColor: '#000000',
                         color: 'white',
@@ -245,24 +320,26 @@ export default function EmailList() {
                         width: '90%',
                         boxSizing: 'border-box',
                         '&:disabled': {
-                            backgroundColor: '#000000', // 禁用状态下的背景颜色
-                            color: '#fff', // 禁用状态下的文字颜色
+                            backgroundColor: '#000000', // Background color for disabled state
+                            color: '#fff', // Text color for disabled state
                         }
                     }}
                 >
-                    {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'SIGN UP'} {/* 提交时显示加载动画 */}
+                    {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'SIGN UP'} {/* Show loading animation during submission */}
                 </Button>
 
+                {/* Privacy notice */}
                 <Typography
                     variant="body2"
                     sx={{
-                        color: '#ffffff', // 蓝色文字
+                        color: '#ffffff', // White text
                     }}
                 >
                     We respect your privacy.
                 </Typography>
             </Grid>
-            {/* 弹窗组件 */}
+
+            {/* Dialog component for notifications */}
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Notification</DialogTitle>
                 <DialogContent>
