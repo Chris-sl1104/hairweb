@@ -1,11 +1,90 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+
+
 
 export default function EmailList() {
+
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        emailAddress: '',
+    });
+
+    const [formErrors, setFormErrors] = useState({}); // 用于存储表单错误状态
+    const [isSubmitting, setIsSubmitting] = useState(false); // 用于追踪提交状态
+    const [dialogOpen, setDialogOpen] = useState(false); // 控制 Dialog 是否显示
+    const [dialogContent, setDialogContent] = useState(''); // 控制 Dialog 的内容
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.id]: e.target.value,
+        });
+    };
+
+    // 提交表单
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // 验证必填字段是否为空
+        const errors = {};
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // email 格式验证
+        if (!formData.firstName) errors.firstName = 'First Name is required';
+        if (!formData.lastName) errors.lastName = 'Last Name is required';
+        if (!formData.emailAddress) {
+            errors.emailAddress = 'Email Address is required';
+        } else if (!emailRegex.test(formData.emailAddress)) {
+            errors.emailAddress = 'Please enter a valid email address';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors); // 如果有错误，显示错误信息
+            return;
+        }
+
+        setFormErrors({}); // 清空错误信息
+        setIsSubmitting(true); // 开始提交，显示加载动画
+
+        // 提交表单数据
+        try {
+            const response = await fetch('http://localhost:5000/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                setDialogContent('You have successfully signed up!'); // 成功消息
+                setFormData({ firstName: '', lastName: '', emailAddress: '' }); // 清空表单
+            } else {
+                setDialogContent('There was an issue with your signup. Please try again.'); // 失败消息
+            }
+            setDialogOpen(true); // 显示弹窗
+        } catch (error) {
+            console.error('Error:', error);
+            setDialogContent('There was an error processing your request.'); // 错误消息
+            setDialogOpen(true); // 显示弹窗
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    // 关闭弹窗的函数
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
     return (
         <Box
             sx={{
@@ -70,10 +149,14 @@ export default function EmailList() {
                 </Typography>
 
                 <TextField
-                    id="first-name"
+                    id="firstName"
                     label="First Name"
                     variant="outlined"
                     fullWidth
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    error={!!formErrors.firstName} // 如果有错误，显示红色边框
+                    helperText={formErrors.firstName} // 显示错误消息
                     sx={{
                         backgroundColor: 'rgba(255, 255, 255, 0.8)', // 背景半透明
                         borderRadius: '4px',
@@ -93,10 +176,14 @@ export default function EmailList() {
                 />
 
                 <TextField
-                    id="last-name"
+                    id="lastName"
                     label="Last Name"
                     variant="outlined"
                     fullWidth
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    error={!!formErrors.lastName} // 如果有错误，显示红色边框
+                    helperText={formErrors.lastName} // 显示错误消息
                     sx={{
                         backgroundColor: 'rgba(255, 255, 255, 0.8)', // 背景半透明
                         borderRadius: '4px',
@@ -116,10 +203,14 @@ export default function EmailList() {
                 />
 
                 <TextField
-                    id="email-address"
+                    id="emailAddress"
                     label="Email Address"
                     variant="outlined"
                     fullWidth
+                    value={formData.emailAddress}
+                    onChange={handleChange}
+                    error={!!formErrors.emailAddress} // 如果有错误，显示红色边框
+                    helperText={formErrors.emailAddress} // 显示错误消息
                     sx={{
                         backgroundColor: 'rgba(255, 255, 255, 0.8)', // 背景半透明
                         borderRadius: '4px',
@@ -138,21 +229,28 @@ export default function EmailList() {
                     }}
                 />
 
+                {/* 在提交时显示加载动画 */}
                 <Button
                     variant="contained"
                     color="primary"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting} // 提交时禁用按钮
                     sx={{
-                        backgroundColor: '#000000', // 黑色按钮
+                        backgroundColor: '#000000',
                         color: 'white',
                         padding: '10px 20px',
                         borderRadius: '4px',
                         marginBottom: '20px',
-                        maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // 响应式最大宽度设置
-                        width: '90%', // 使得按钮在小屏幕时也不会超过100%宽度
-                        boxSizing: 'border-box', // 包含padding在宽度内
+                        maxWidth: { xs: '60%', sm: '80%', md: '100%' },
+                        width: '90%',
+                        boxSizing: 'border-box',
+                        '&:disabled': {
+                            backgroundColor: '#000000', // 禁用状态下的背景颜色
+                            color: '#fff', // 禁用状态下的文字颜色
+                        }
                     }}
                 >
-                    SIGN UP
+                    {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'SIGN UP'} {/* 提交时显示加载动画 */}
                 </Button>
 
                 <Typography
@@ -164,6 +262,18 @@ export default function EmailList() {
                     We respect your privacy.
                 </Typography>
             </Grid>
+            {/* 弹窗组件 */}
+            <Dialog open={dialogOpen} onClose={handleDialogClose}>
+                <DialogTitle>Notification</DialogTitle>
+                <DialogContent>
+                    <Typography>{dialogContent}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
