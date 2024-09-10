@@ -84,8 +84,19 @@ const Booking = () => {
         setDrawerOpen(false);
     };
     const handleContinue = () => {
-        navigate('/checkout');
+        const selectedServiceDetails = selectedServices.map(serviceId =>
+            Object.values(servicesData).flat().find(service => service.id === serviceId)
+        );
+
+        navigate('/Checkout', {
+            state: {
+                selectedServices: selectedServiceDetails,
+                totalAmount,
+                totalDuration
+            }
+        });
     };
+
 
     return (
         <>

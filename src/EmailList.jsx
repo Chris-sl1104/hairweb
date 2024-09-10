@@ -96,6 +96,8 @@ export default function EmailList() {
                     ...formData,  // Form data: first name, last name, and email
                     recaptchaTokenV2: v2Token,  // reCAPTCHA v2 token
                     recaptchaToken: token,  // reCAPTCHA enterprise token
+                    emailType: 'signupConfirmation',
+                    bookingData: {}
                 }),
             });
 

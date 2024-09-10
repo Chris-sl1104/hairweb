@@ -15,6 +15,7 @@ import Shopping from "./Shopping.jsx"
 import Map from "./Map.jsx"
 import Booking from "./Booking.jsx";
 import Checkout from './Checkout.jsx';
+import Result from "./Result.jsx"
 
 function App() {
     return (
@@ -44,6 +45,7 @@ function App() {
                 {/* Booking 组件单独放在 /booking 页面 */}
                 <Route path="/b" element={<Booking />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/result" element={<Result />} />
             </Routes>
         </Router>
     );
