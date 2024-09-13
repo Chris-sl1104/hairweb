@@ -131,7 +131,7 @@ export default function MainPage() {
                                 boxShadow: '0px 6px 20px rgba(255, 64, 129, 0.7)',
                             },
                         }}
-                        onClick={() => navigate('/b')}
+                        onClick={() => navigate('/booking')}
                     >
                         Book Now
                     </Button>

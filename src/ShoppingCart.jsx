@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import {Box, Drawer, IconButton, List, ListItem, Button, Typography, Divider, Switch} from '@mui/material';
+import { Box, Drawer, IconButton, List, ListItem, Button, Typography, Divider } from '@mui/material';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import Brightness4Icon from '@mui/icons-material/Brightness4';  // 引入 Brightness4Icon
-import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { useTheme } from '@mui/material/styles'; // 获取主题
+import { useSelector } from 'react-redux'; // 使用 Redux 来获取主题状态
 
 const ShoppingCart = () => {
     const theme = useTheme(); // 获取当前的主题
@@ -43,7 +42,7 @@ const ShoppingCart = () => {
 
     return (
         <div>
-            <IconButton onClick={toggleCart} sx={{ color:'white' }}>
+            <IconButton onClick={toggleCart} sx={{ color: 'white' }}>
                 <LocalGroceryStoreIcon />
             </IconButton>
 
@@ -59,23 +58,24 @@ const ShoppingCart = () => {
                         borderRadius: '30px',
                         padding: 2,
                         boxShadow: 5,
-                        backgroundColor: theme.palette.background.default, // 动态适应主题的背景色
+                        backgroundColor: theme.palette.background.paper, // 使用动态主题背景颜色
+                        color: theme.palette.text.primary, // 动态文字颜色
                         overflowY: 'auto',
                     }
                 }}
             >
-                <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
+                <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center', color: theme.palette.text.primary }}>
                     Your Shopping Cart
                 </Typography>
-                <Divider sx={{ mb: 2 }} />
+                <Divider sx={{ mb: 2, backgroundColor: theme.palette.divider }} />
 
                 {cartItems.length === 0 ? (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                        <ShoppingCartOutlinedIcon sx={{ fontSize: 60, color: '#c0c0c0', mb: 2 }} />
-                        <Typography variant="h6" sx={{ color: '#757575' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.palette.text.secondary }}>
+                        <ShoppingCartOutlinedIcon sx={{ fontSize: 60, color: theme.palette.text.disabled, mb: 2 }} />
+                        <Typography variant="h6" sx={{ color: theme.palette.text.secondary }}>
                             Your cart is empty
                         </Typography>
-                        <Typography variant="body2" sx={{ color: '#9e9e9e', mt: 1 }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
                             Add some products to your cart to see them here.
                         </Typography>
                     </Box>
@@ -83,12 +83,12 @@ const ShoppingCart = () => {
                     <>
                         <List>
                             {cartItems.map((item) => (
-                                <ListItem key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, borderBottom: '1px solid #e0e0e0' }}>
+                                <ListItem key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, borderBottom: `1px solid ${theme.palette.divider}` }}>
                                     <Box>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                        <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}>
                                             {item.name}
                                         </Typography>
-                                        <Typography variant="body2" color="textSecondary">
+                                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
                                             ${item.price.toFixed(2)}
                                         </Typography>
                                     </Box>
@@ -96,7 +96,7 @@ const ShoppingCart = () => {
                                         <IconButton onClick={() => handleQuantityChange(item.id, -1)} sx={{ color: '#ff1744' }}>
                                             <RemoveIcon />
                                         </IconButton>
-                                        <Typography sx={{ minWidth: '20px', textAlign: 'center' }}>{item.quantity}</Typography>
+                                        <Typography sx={{ minWidth: '20px', textAlign: 'center', color: theme.palette.text.primary }}>{item.quantity}</Typography>
                                         <IconButton onClick={() => handleQuantityChange(item.id, 1)} sx={{ color: '#4caf50' }}>
                                             <AddIcon />
                                         </IconButton>
@@ -108,10 +108,10 @@ const ShoppingCart = () => {
                             ))}
                         </List>
 
-                        <Divider sx={{ mt: 2 }} />
+                        <Divider sx={{ mt: 2, backgroundColor: theme.palette.divider }} />
                         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', padding: '0 16px' }}>
-                            <Typography variant="h6">Total:</Typography>
-                            <Typography variant="h6">${getTotalPrice()}</Typography>
+                            <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>Total:</Typography>
+                            <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>${getTotalPrice()}</Typography>
                         </Box>
 
                         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
@@ -120,8 +120,6 @@ const ShoppingCart = () => {
                                 color="primary"
                                 sx={{
                                     width: '100%',
-                                    backgroundColor: '#1976d2',
-                                    '&:hover': { backgroundColor: '#1565c0' },
                                     fontWeight: 'bold',
                                     padding: '10px 16px',
                                     borderRadius: '8px',
@@ -138,42 +136,4 @@ const ShoppingCart = () => {
     );
 };
 
-const App = () => {
-    const [mode, setMode] = useState('light');
-
-    const theme = createTheme({
-        palette: {
-            mode,
-            background: {
-                default: mode === 'light' ? '#f9f9f9' : '#121212',
-            },
-        },
-    });
-
-    return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: {sm: 0, md: 1, lg: 2}}}>
-                {/* 左边的 Brightness4Icon 和 Switch 切换模式 */}
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton
-                        onClick={() => setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'))}
-                        color="inherit"
-                    >
-                        <Brightness4Icon />
-                    </IconButton>
-                    {/* 添加的 Switch 开关 */}
-                    <Switch
-                        checked={mode === 'dark'}
-                        onChange={() => setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'))}
-                    />
-                </Box>
-                {/* 右边的购物车图标 */}
-                <ShoppingCart />
-            </Box>
-        </ThemeProvider>
-
-    );
-};
-
-export default App;
+export default ShoppingCart;

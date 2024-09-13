@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Box, Button, Typography, List, ListItem, ListItemText, IconButton, Grid, Tabs, Tab, Divider, useMediaQuery, Card, Drawer, CssBaseline } from '@mui/material';
+import { Box, Button, Typography, List, ListItem, ListItemText, IconButton, Grid, Tabs, Tab, Divider, useMediaQuery, Card, Drawer } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
-import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
-import ResponsiveAppBar from "./ResponsiveAppBar.jsx";
-
+import { useTheme } from '@mui/material/styles';
 
 const categories = [
     { id: 'monday-promotion', name: "Monday - Friday Promotion" },
@@ -83,6 +81,7 @@ const Booking = () => {
     const handleDrawerClose = () => {
         setDrawerOpen(false);
     };
+
     const handleContinue = () => {
         const selectedServiceDetails = selectedServices.map(serviceId =>
             Object.values(servicesData).flat().find(service => service.id === serviceId)
@@ -97,26 +96,25 @@ const Booking = () => {
         });
     };
 
-
     return (
-        <>
-        <ResponsiveAppBar />
-            <Box
-                sx={{
-                    paddingTop: '5rem',
-                    paddingX: 3, // 左右方向的 padding
-                    paddingBottom: 3, // 底部的 padding
-                    display: 'flex',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    maxWidth: '100%',
-                    overflowX: 'hidden',
-                    backgroundColor: theme.palette.background.default
-                }}
-            >
-
+        <Box
+            sx={{
+                paddingTop: '5rem',
+                paddingX: 3,
+                paddingBottom: 3,
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                maxWidth: '100%',
+                overflowX: 'hidden',
+                backgroundColor: theme.palette.background.default,  // 动态背景颜色
+                color: theme.palette.text.primary  // 动态文字颜色
+            }}
+        >
             {/* 左边：服务类别和服务列表 */}
             <Box flex={isMobile ? 1 : 0.7} p={isMobile ? 0.05 : 2} sx={{ overflowY: 'auto', maxHeight: '90vh', maxWidth: '90vw', overflowX: 'hidden' }}>
-                <Typography variant="h5" mb={2} fontWeight="bold">Select services</Typography>
+                <Typography variant="h5" mb={2} color="text.primary" fontWeight="bold">
+                    Select services
+                </Typography>
 
                 {/* 类别的滑动菜单 */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, maxWidth: '100%' }}>
@@ -148,15 +146,26 @@ const Booking = () => {
                 {/* 服务清单 */}
                 {categories.map((category) => (
                     <Box key={category.id} ref={categoryRefs[category.id]} mb={4} sx={{ maxWidth: '100%' }}>
-                        <Typography variant="h6" fontWeight="bold">{category.name}</Typography>
+                        <Typography variant="h6" fontWeight="bold" color="text.primary">{category.name}</Typography>
                         <List sx={{ maxWidth: '100%' }}>
                             {servicesData[category.id].map((service) => (
-                                <Card key={service.id} sx={{ mb: 2, p: 2, borderRadius: 2, boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)', transition: 'transform 0.3s ease-in-out', '&:hover': { transform: 'scale(1.03)' } }}>
+                                <Card key={service.id} sx={{
+                                    mb: 2,
+                                    p: 2,
+                                    borderRadius: 2,
+                                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+                                    transition: 'transform 0.3s ease-in-out',
+                                    '&:hover': { transform: 'scale(1.03)' },
+                                    backgroundColor: theme.palette.background.paper,  // 动态卡片背景颜色
+                                    color: theme.palette.text.primary  // 动态文字颜色
+                                }}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={9}>
                                             <ListItemText
                                                 primary={service.name}
                                                 secondary={`${service.description} from $${service.price}`}
+                                                primaryTypographyProps={{ color: theme.palette.text.primary }} // 动态字体颜色
+                                                secondaryTypographyProps={{ color: theme.palette.text.secondary }} // 动态次要文本颜色
                                             />
                                         </Grid>
                                         <Grid item xs={3} display="flex" justifyContent="flex-end">
@@ -178,31 +187,35 @@ const Booking = () => {
                     flex={0.3}
                     p={2}
                     sx={{
-                        borderLeft: `1px solid ${theme.palette.divider}`, // 动态边框颜色
-                        backgroundColor: theme.palette.background.paper,  // 动态背景颜色
+                        borderLeft: `1px solid ${theme.palette.divider}`,
+                        backgroundColor: theme.palette.background.paper,
                         borderRadius: '16px',
                         maxWidth: '100%'
                     }}
                 >
-
-                <Typography variant="h6" fontWeight="bold">Selected Services</Typography>
+                    <Typography variant="h6" fontWeight="bold" color="text.primary">Selected Services</Typography>
                     {selectedServices.length === 0 ? (
-                        <Typography>No services selected</Typography>
+                        <Typography color="text.primary">No services selected</Typography>
                     ) : (
                         <List>
                             {selectedServices.map((serviceId) => {
                                 const service = Object.values(servicesData).flat().find(s => s.id === serviceId);
                                 return (
                                     <ListItem key={service.id}>
-                                        <ListItemText primary={service.name} secondary={`$${service.price} · ${formatDuration(service.duration)}`} />
+                                        <ListItemText
+                                            primary={service.name}
+                                            secondary={`$${service.price} · ${formatDuration(service.duration)}`}
+                                            primaryTypographyProps={{ color: theme.palette.text.primary }} // 动态字体颜色
+                                            secondaryTypographyProps={{ color: theme.palette.text.secondary }} // 动态次要文本颜色
+                                        />
                                     </ListItem>
                                 );
                             })}
                         </List>
                     )}
                     <Divider sx={{ my: 2 }} />
-                    <Typography variant="h6">Total: ${totalAmount}</Typography>
-                    <Typography variant="body1" color="textSecondary">Total Duration: {formatDuration(totalDuration)}</Typography>
+                    <Typography variant="h6" color="text.primary">Total: ${totalAmount}</Typography>
+                    <Typography variant="body1" color="text.secondary">Total Duration: {formatDuration(totalDuration)}</Typography>
                     <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleContinue}>
                         Continue
                     </Button>
@@ -223,8 +236,8 @@ const Booking = () => {
                         zIndex: 1000
                     }}>
                         <Grid container justifyContent="space-between" alignItems="center">
-                            <Typography variant="body1">Total: ${totalAmount}</Typography>
-                            <Typography variant="body1">Duration: {formatDuration(totalDuration)}</Typography>
+                            <Typography variant="body1" color="text.primary">Total: ${totalAmount}</Typography>
+                            <Typography variant="body1" color="text.primary">Duration: {formatDuration(totalDuration)}</Typography>
                         </Grid>
                         <Button
                             variant="contained"
@@ -245,24 +258,29 @@ const Booking = () => {
                         PaperProps={{ sx: { maxHeight: '60%' } }}
                     >
                         <Box p={2}>
-                            <Typography variant="h6" fontWeight="bold">Selected Services</Typography>
+                            <Typography variant="h6" fontWeight="bold" color="text.primary">Selected Services</Typography>
                             {selectedServices.length === 0 ? (
-                                <Typography>No services selected</Typography>
+                                <Typography color="text.primary">No services selected</Typography>
                             ) : (
                                 <List>
                                     {selectedServices.map((serviceId) => {
                                         const service = Object.values(servicesData).flat().find(s => s.id === serviceId);
                                         return (
                                             <ListItem key={service.id}>
-                                                <ListItemText primary={service.name} secondary={`$${service.price} · ${formatDuration(service.duration)}`} />
+                                                <ListItemText
+                                                    primary={service.name}
+                                                    secondary={`$${service.price} · ${formatDuration(service.duration)}`}
+                                                    primaryTypographyProps={{ color: theme.palette.text.primary }} // 动态字体颜色
+                                                    secondaryTypographyProps={{ color: theme.palette.text.secondary }} // 动态次要文本颜色
+                                                />
                                             </ListItem>
                                         );
                                     })}
                                 </List>
                             )}
                             <Divider sx={{ my: 2 }} />
-                            <Typography variant="h6">Total: ${totalAmount}</Typography>
-                            <Typography variant="body1" color="textSecondary">Total Duration: {formatDuration(totalDuration)}</Typography>
+                            <Typography variant="h6" color="text.primary">Total: ${totalAmount}</Typography>
+                            <Typography variant="body1" color="text.secondary">Total Duration: {formatDuration(totalDuration)}</Typography>
                             <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleDrawerClose}>
                                 Close
                             </Button>
@@ -274,55 +292,7 @@ const Booking = () => {
                 </>
             )}
         </Box>
-        </>
     );
 };
 
-const App = () => {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
-    const theme = createTheme({
-        palette: {
-            mode: prefersDarkMode ? 'dark' : 'light',
-            primary: {
-                main: '#1976d2',
-            },
-            background: {
-                default: prefersDarkMode ? '#121212' : '#f5f5f5',
-                paper: prefersDarkMode ? '#1e1e1e' : '#fff',
-            },
-        },
-        typography: {
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-            button: {
-                textTransform: 'none', // Prevent all-caps buttons
-            },
-        },
-        components: {
-            MuiCard: {
-                styleOverrides: {
-                    root: {
-                        borderRadius: '16px',
-                    },
-                },
-            },
-            MuiButton: {
-                styleOverrides: {
-                    root: {
-                        borderRadius: '16px',
-                    },
-                },
-            },
-        },
-    });
-
-
-    return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Booking />
-        </ThemeProvider>
-    );
-};
-
-export default App;
+export default Booking;

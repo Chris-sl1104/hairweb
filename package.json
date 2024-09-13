@@ -15,6 +15,7 @@
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
     "@react-google-maps/api": "^2.19.3",
+    "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.7",
     "cors": "^2.8.5",
     "emailjs-com": "^3.2.0",
@@ -24,10 +25,12 @@
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.3.1",
     "react-google-recaptcha": "^3.1.0",
+    "react-redux": "^9.1.2",
     "react-ripple-effect": "^1.0.4",
     "react-ripples": "^2.2.1",
     "react-router-dom": "^6.26.1",
     "react-swipeable-views": "^0.14.0",
+    "redux": "^5.0.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
