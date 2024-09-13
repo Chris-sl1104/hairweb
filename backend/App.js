@@ -1,31 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Item = require('./models/Item'); // 引入 Item 模型
-const User = require('./models/User'); // 引入 User 模型
+const Item = require('./models/Item'); // Import Item model
+const User = require('./models/User'); // Import User model
 const cors = require('cors');
-require('dotenv').config();  // 加载 .env 文件中的环境变量
+require('dotenv').config(); // Load environment variables in .env file
 const bodyParser = require('body-parser');
-const axios = require('axios'); // 使用 axios 发起 HTTP 请求
+const axios = require('axios'); // Use axios to make HTTP requests
 const nodemailer = require('nodemailer');
-
 const Booking = require('./models/Booking.js');
-
 const app = express();
 const router = express.Router();
 
-// 允许所有来源访问 API
+// Allow all sources to access the API
 app.use(cors());
-
-app.use(express.json()); // 解析 JSON 请求
+app.use(express.json()); // Parse JSON request
 app.use(bodyParser.json());
 
-// 连接 MongoDB
+// Connect MongoDB
 mongoose.connect('mongodb://localhost:27017/shoppingDB')
     .then(() => console.log('MongoDB 连接成功'))
     .catch((err) => console.error('MongoDB 连接错误:', err));
 
 
-// 获取已预订的时间
+// Get the booked time
 router.get('/bookings', async (req, res) => {
     try {
         const bookings = await Booking.find({}, { appointmentTime: 1, _id: 0 }); // 只返回预约时间
@@ -36,17 +33,17 @@ router.get('/bookings', async (req, res) => {
     }
 });
 
-// POST 路由来处理预定并保存到数据库
+// POST route to process the reservation and save it to the database
 app.post('/bookings', async (req, res) => {
     const { firstName, lastName, emailAddress, selectedServices, totalAmount, totalDuration, appointmentTime } = req.body;
 
-    // 验证请求体中是否有必要的数据
+    // Verify that the request body contains necessary data
     if (!firstName || !lastName || !emailAddress || !selectedServices || !totalAmount || !totalDuration || !appointmentTime) {
         return res.status(400).json({ message: 'Please provide all required fields.' });
     }
 
     try {
-        // 创建一个新的预定文档
+        // Create a new booking document
         const newBooking = new Booking({
             firstName,
             lastName,
@@ -57,7 +54,7 @@ app.post('/bookings', async (req, res) => {
             appointmentTime,
         });
 
-        // 保存到数据库
+        // Save to database
         await newBooking.save();
 
         res.status(201).json({ message: 'Booking confirmed successfully', booking: newBooking });
@@ -72,12 +69,12 @@ app.post('/bookings', async (req, res) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // 你的邮箱
-        pass: process.env.EMAIL_PASS, // 邮箱密码
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
     },
 });
 
-// 通用邮件发送函数
+// Generic mail sending function
 const sendEmail = async (mailOptions) => {
     try {
         await transporter.sendMail(mailOptions);
@@ -88,11 +85,11 @@ const sendEmail = async (mailOptions) => {
     }
 };
 
-// 邮件发送逻辑
+// Email sending logic
 app.post('/send-email', async (req, res) => {
     const { firstName, lastName, emailAddress, bookingData, recaptchaToken, recaptchaTokenV2, emailType } = req.body;
 
-    // 验证 reCAPTCHA v2 token
+    // Verify reCAPTCHA v2 token
     try {
         const recaptchaV2Response = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
             params: {
@@ -109,11 +106,11 @@ app.post('/send-email', async (req, res) => {
         return res.status(500).json({ message: 'Error verifying reCAPTCHA v2' });
     }
 
-    // 验证 reCAPTCHA v3 token
+    // Verify reCAPTCHA v3 token
     try {
         const recaptchaResponse = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
             params: {
-                secret: process.env.RECAPTCHA_SECRET_KEY, // 你的 reCAPTCHA 密钥
+                secret: process.env.RECAPTCHA_SECRET_KEY, // reCAPTCHA Key
                 response: recaptchaToken,
             },
         });
@@ -127,16 +124,16 @@ app.post('/send-email', async (req, res) => {
     }
 
     try {
-        // 根据 emailType 生成不同的邮件内容
+        // Generate different email content according to emailType
         let mailOptionsToCustomer;
         if (emailType === 'bookingConfirmation') {
-            // 从 bookingData 中提取所需信息
+            // Extract the required information from bookingData
             const { selectedServices, totalAmount, appointmentTime } = bookingData;
 
-            // 格式化服务信息
+            // Formatting service information
             const servicesList = selectedServices.map(service => `- ${service.name}: $${service.price}`).join('\n');
 
-            // 格式化时间
+            // Formatting time
             const formattedDate = new Date(appointmentTime).toLocaleString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -147,10 +144,10 @@ app.post('/send-email', async (req, res) => {
                 hour12: true,
             });
 
-            // 预定确认邮件
+            // Booking confirmation email
             mailOptionsToCustomer = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
-                to: emailAddress,  // 使用 bookingData.email
+                to: emailAddress,  // Using bookingData.email
                 subject: 'Your booking is confirmed!',
                 text: `Dear ${bookingData.firstName} ${bookingData.lastName},\n\n` +
                     `Your booking has been confirmed for the following services:\n\n` +
@@ -161,7 +158,7 @@ app.post('/send-email', async (req, res) => {
                     `Thank you!\nThe Hair Salon Team`
             };
         } else if (emailType === 'signupConfirmation') {
-            // 注册确认邮件
+            // Registration confirmation email
             mailOptionsToCustomer = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
                 to: emailAddress,
@@ -169,7 +166,7 @@ app.post('/send-email', async (req, res) => {
                 text: `Hello ${firstName},\n\nThank you for joining our mailing list! We're excited to have you with us.\n\nBest regards,\nThe Hair Salon Team`
             };
         } else {
-            // 默认邮件
+            // Default Email
             mailOptionsToCustomer = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
                 to: emailAddress,
@@ -178,14 +175,14 @@ app.post('/send-email', async (req, res) => {
             };
         }
 
-        // 发送给客户
+        // Send to customers
         await sendEmail(mailOptionsToCustomer);
         const { selectedServices, totalAmount, appointmentTime, totalDuration } = bookingData;
         if (emailType === 'bookingConfirmation') {
-            // 仅在 emailType 是 bookingConfirmation 时处理 servicesList
+            // Only process servicesList if emailType is bookingConfirmation
             const servicesList = selectedServices.map(service => `- ${service.name}: $${service.price}`).join('\n');
 
-            // 发送通知给老板
+            // Send a notification to your boss
             const mailOptionsToOwner = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
                 to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
@@ -194,7 +191,7 @@ app.post('/send-email', async (req, res) => {
                     `Name: ${firstName} ${lastName}\n` +
                     `Email: ${emailAddress}\n\n` +
                     `Booking Details:\n` +
-                    `Service: ${servicesList}\n\n` +  // 只有在 bookingConfirmation 时生成服务列表
+                    `Service: ${servicesList}\n\n` +  // Generate service list only when bookingConfirmation is called
                     `Total Amount: $${totalAmount}\n` +
                     `Total Duration: ${Math.floor(totalDuration / 60)} hours ${totalDuration % 60} minutes\n` + // 显示总时长
                     `Appointment Time: ${new Date(appointmentTime).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}\n\n` + // 格式化时间
@@ -203,7 +200,8 @@ app.post('/send-email', async (req, res) => {
 
             await sendEmail(mailOptionsToOwner);
         } else {
-            // 如果 emailType 不是 bookingConfirmation，跳过 servicesList 部分，但继续执行其他逻辑
+            // If emailType is not bookingConfirmation,
+            // skip the servicesList part but continue to execute other logic
             const mailOptionsToOwner = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
                 to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
@@ -228,13 +226,13 @@ app.post('/send-email', async (req, res) => {
 
 
 
-// 获取 API Key 并通过 API 返回
+// Get API Key and return by API
 app.get('/api/get-maps-api-key', (req, res) => {
-    const apiKey = process.env.GOOGLE_MAPS_API_KEY;  // 从环境变量获取 API Key
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;  // Get the API Key from the environment variable
     res.json({ apiKey });
 });
 
-// 获取所有商品
+// Get all the goods
 app.get('/items', async (req, res) => {
     try {
         const items = await Item.find();
@@ -246,6 +244,6 @@ app.get('/items', async (req, res) => {
 
 
 
-// 启动服务器
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => console.log(`服务器正在运行在端口 ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`The server is running on port ${PORT}`));

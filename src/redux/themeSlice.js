@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    mode: 'light',  // 初始模式设为 'light'
+    mode: 'dark',  // 初始模式设为 'dark'
 };
 
 const themeSlice = createSlice({
