@@ -1,12 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { Box, Button, Typography, List, ListItem, ListItemText, IconButton, Grid, Tabs, Tab, Divider, useMediaQuery, Card, Drawer } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
+import LoadingSpinnerWithRandomSpeed from "./LoadingSpinner.jsx";
+
 
 const categories = [
     { id: 'monday-promotion', name: "Monday - Friday Promotion" },
@@ -32,17 +34,41 @@ const servicesData = {
 };
 
 const Booking = () => {
+    const [loading, setLoading] = useState(true);
+
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState(0);
     const [selectedServices, setSelectedServices] = useState([]);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    // Initialize an empty object with useRef
+    const categoryRefs = useRef({});
+    useEffect(() => {
+        // Initialize each category’s ref
+        categories.forEach(category => {
+            if (!categoryRefs.current[category.id]) {
+                categoryRefs.current[category.id] = React.createRef();
+            }
+        });
+    }, []); // It only needs to be executed once when the component is initialized.
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 3000); // Stop the loading animation after 3 seconds
 
-    const categoryRefs = categories.reduce((acc, category) => {
+        return () => clearTimeout(timer); // Clear the timer
+    }, []);
+
+    if (loading) {
+        return <LoadingSpinnerWithRandomSpeed />;
+    }
+
+    /*const categoryRefs = categories.reduce((acc, category) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         acc[category.id] = useRef(null);
         return acc;
-    }, {});
+    }, {});*/
 
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue);
@@ -106,17 +132,18 @@ const Booking = () => {
                 flexDirection: isMobile ? 'column' : 'row',
                 maxWidth: '100%',
                 overflowX: 'hidden',
-                backgroundColor: theme.palette.background.default,  // 动态背景颜色
-                color: theme.palette.text.primary  // 动态文字颜色
+                background: theme.palette.mode === 'dark'
+                    ? 'linear-gradient(to bottom, #2c3e50, #34495e)'
+                    : 'linear-gradient(to bottom, #ecf0f1, #bdc3c7)',
             }}
         >
-            {/* 左边：服务类别和服务列表 */}
+            {/* Left side: Service categories and service list */}
             <Box flex={isMobile ? 1 : 0.7} p={isMobile ? 0.05 : 2} sx={{ overflowY: 'auto', maxHeight: '90vh', maxWidth: '90vw', overflowX: 'hidden' }}>
                 <Typography variant="h5" mb={2} color="text.primary" fontWeight="bold">
                     Select services
                 </Typography>
 
-                {/* 类别的滑动菜单 */}
+                {/* Scrollable menu for categories */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, maxWidth: '100%' }}>
                     <IconButton onClick={() => setSelectedTab((prev) => Math.max(prev - 1, 0))}>
                         <ArrowBackIosIcon />
@@ -143,7 +170,7 @@ const Booking = () => {
                     </IconButton>
                 </Box>
 
-                {/* 服务清单 */}
+                {/* Service list */}
                 {categories.map((category) => (
                     <Box key={category.id} ref={categoryRefs[category.id]} mb={4} sx={{ maxWidth: '100%' }}>
                         <Typography variant="h6" fontWeight="bold" color="text.primary">{category.name}</Typography>
@@ -155,17 +182,20 @@ const Booking = () => {
                                     borderRadius: 2,
                                     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
                                     transition: 'transform 0.3s ease-in-out',
-                                    '&:hover': { transform: 'scale(1.03)' },
-                                    backgroundColor: theme.palette.background.paper,  // 动态卡片背景颜色
-                                    color: theme.palette.text.primary  // 动态文字颜色
+                                    '&:hover': { transform: 'scale(1.03)',
+                                        backgroundColor: theme.palette.warning.light,
+                                        boxShadow: '0 10px 20px rgba(255,153,18, 0.5)',
+                                    },
+                                    backgroundColor: theme.palette.background.paper,
+                                    color: theme.palette.text.primary
                                 }}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={9}>
                                             <ListItemText
                                                 primary={service.name}
                                                 secondary={`${service.description} from $${service.price}`}
-                                                primaryTypographyProps={{ color: theme.palette.text.primary }} // 动态字体颜色
-                                                secondaryTypographyProps={{ color: theme.palette.text.secondary }} // 动态次要文本颜色
+                                                primaryTypographyProps={{ color: theme.palette.text.primary }}
+                                                secondaryTypographyProps={{ color: theme.palette.text.secondary }}
                                             />
                                         </Grid>
                                         <Grid item xs={3} display="flex" justifyContent="flex-end">
@@ -181,14 +211,18 @@ const Booking = () => {
                 ))}
             </Box>
 
-            {/* 右边：已选择服务和总价 */}
+            {/* Right side: Selected services and total amount */}
+
             {!isMobile && (
                 <Box
                     flex={0.3}
                     p={2}
                     sx={{
                         borderLeft: `1px solid ${theme.palette.divider}`,
-                        backgroundColor: theme.palette.background.paper,
+                        background: theme.palette.mode === 'dark'
+                            ? 'linear-gradient(to bottom, #1f2a36, #2a3d52)'  // Slightly darker for dark mode
+                            : 'linear-gradient(to bottom, #d0d6da, #a7b0b8)',  // Slightly darker for light mode
+
                         borderRadius: '16px',
                         maxWidth: '100%'
                     }}
@@ -205,8 +239,8 @@ const Booking = () => {
                                         <ListItemText
                                             primary={service.name}
                                             secondary={`$${service.price} · ${formatDuration(service.duration)}`}
-                                            primaryTypographyProps={{ color: theme.palette.text.primary }} // 动态字体颜色
-                                            secondaryTypographyProps={{ color: theme.palette.text.secondary }} // 动态次要文本颜色
+                                            primaryTypographyProps={{ color: theme.palette.text.primary }}
+                                            secondaryTypographyProps={{ color: theme.palette.text.secondary }}
                                         />
                                     </ListItem>
                                 );
@@ -216,13 +250,19 @@ const Booking = () => {
                     <Divider sx={{ my: 2 }} />
                     <Typography variant="h6" color="text.primary">Total: ${totalAmount}</Typography>
                     <Typography variant="body1" color="text.secondary">Total Duration: {formatDuration(totalDuration)}</Typography>
-                    <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleContinue}>
+                    <Button variant="contained" color="warning" fullWidth
+                            sx={{ mt: 2,
+                                '&:hover': { transform: 'scale(1.05)',
+                                    backgroundColor: theme.palette.warning.main,
+                                    boxShadow: '0 10px 20px rgba(255,153,18, 0.7)',
+                                },
+                    }} onClick={handleContinue}>
                         Continue
                     </Button>
                 </Box>
             )}
 
-            {/* 手机端：总价和总时长 + 展开箭头 */}
+            {/* Mobile version: total amount and total duration + expand arrow */}
             {isMobile && (
                 <>
                     <Box sx={{
@@ -241,11 +281,11 @@ const Booking = () => {
                         </Grid>
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="warning"
                             fullWidth
                             endIcon={<ExpandLessIcon />}
                             onClick={handleDrawerOpen}
-                            sx={{ mt: 1, transition: 'all 0.3s', '&:hover': { backgroundColor: theme.palette.primary.dark } }}
+                            sx={{ mt: 1, transition: 'all 0.3s', '&:hover': { backgroundColor: theme.palette.warning.dark } }}
                         >
                             Continue
                         </Button>
@@ -270,8 +310,8 @@ const Booking = () => {
                                                 <ListItemText
                                                     primary={service.name}
                                                     secondary={`$${service.price} · ${formatDuration(service.duration)}`}
-                                                    primaryTypographyProps={{ color: theme.palette.text.primary }} // 动态字体颜色
-                                                    secondaryTypographyProps={{ color: theme.palette.text.secondary }} // 动态次要文本颜色
+                                                    primaryTypographyProps={{ color: theme.palette.text.primary }} // Dynamic font color
+                                                    secondaryTypographyProps={{ color: theme.palette.text.secondary }} // Dynamic secondary text color
                                                 />
                                             </ListItem>
                                         );
@@ -281,10 +321,19 @@ const Booking = () => {
                             <Divider sx={{ my: 2 }} />
                             <Typography variant="h6" color="text.primary">Total: ${totalAmount}</Typography>
                             <Typography variant="body1" color="text.secondary">Total Duration: {formatDuration(totalDuration)}</Typography>
-                            <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleDrawerClose}>
+                            <Button variant="contained" color="warning" fullWidth sx={{ mt: 2 ,
+                                '&:hover': { transform: 'scale(1.03)',
+                                    backgroundColor: theme.palette.warning.main,
+                                }}}
+                                    onClick={handleDrawerClose}>
                                 Close
                             </Button>
-                            <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleContinue}>
+                            <Button variant="contained" color="warning" fullWidth
+                                    sx={{ mt: 2 ,
+                                        '&:hover': { transform: 'scale(1.03)',
+                                            backgroundColor: theme.palette.warning.main,
+                                        }}}
+                                        onClick={handleContinue}>
                                 Proceed to Checkout
                             </Button>
                         </Box>

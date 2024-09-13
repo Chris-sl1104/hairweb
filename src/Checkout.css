@@ -1,0 +1,17 @@
+/* Checkout.css */
+
+.checkout-container {
+    padding: 16px;
+    background-color: #f5f5f5;
+}
+
+.checkout-icon {
+    color: #000000; /* 默认颜色 */
+    font-size: 40px;
+    margin-top: -4px; /* 向上移动图标 */
+}
+
+.checkout-title {
+    font-size: 24px;
+    font-weight: bold;
+}
