@@ -2,13 +2,15 @@ import React, { useState, useRef } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import './Welcome.css';
 import { Typography, Box } from '@mui/material';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // Import the play icon
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useTheme } from '@mui/material/styles'; // Import the useTheme hook
+
 
 export default function VideoShow() {
     const [videoPlayed, setVideoPlayed] = useState(Array(12).fill(false)); // Array to track the play status of each video
     const videoRefs = useRef([]); // Store references to video elements
+    const theme = useTheme(); // Get the current theme
 
     const handleImageClick = (index) => {
         const updatedPlayedStatus = [...videoPlayed];
@@ -55,21 +57,26 @@ export default function VideoShow() {
     const placeholderImage = 'https://gratisography.com/wp-content/uploads/2024/01/gratisography-cyber-kitty-800x525.jpg';
 
     return (
-        <div className="welcomeClass">
+        <Box className="welcomeClass"
+        sx={{
+            backgroundColor: theme.palette.background.default,
+        }}>
             <Typography
                 variant="h1"
                 className="font-antic-didone"
                 sx={{
-                    marginTop: { xs: '50px', md: '70px', lg: '90px' }, // Top margin adjustments for various screen sizes
-                    marginBottom: { xs: '50px', md: '70px', lg: '80px' }, // Bottom margin adjustments
-                    marginLeft: { xs: '15px', md: '35px' }, // Left margin adjustments
+                    // marginTop: { xs: '50px', md: '70px', lg: '90px' }, // Top margin adjustments for various screen sizes
+                    marginBottom: {xs: '50px', md: '70px', lg: '80px'}, // Bottom margin adjustments
+                    marginLeft: {xs: '15px', md: '35px'}, // Left margin adjustments
                     marginRight: '15px', // Fixed right margin
-                    fontSize: { xs: '40px', sm: '50px', md: '60px', lg: '70px' }, // Responsive font sizes
+                    fontSize: {xs: '40px', sm: '50px', md: '60px', lg: '70px'}, // Responsive font sizes
                     textAlign: 'left',
-                    fontFamily: '"Antic Didone", serif', // Directly setting the font in sx
+                    fontFamily: '"Antic Didone", serif',
+                    color: theme.palette.text.primary, // Dynamic text color based on theme
+
                 }}
             >
-                Instagram Videos
+                <br/><br/>Instagram Videos<br/>
             </Typography>
 
             <Box sx={{ flexGrow: 1, p: { xs: 1, xm: 3, md: 4, lg: 5 } }}>
@@ -116,6 +123,7 @@ export default function VideoShow() {
                                                 height: '100%',
                                                 objectFit: 'cover',
                                                 cursor: 'pointer', // Change cursor on hover
+                                                filter: theme.palette.mode === 'dark' ? 'brightness(70%)' : 'none', // Adjust brightness for dark mode
                                             }}
                                         />
                                         {/* Play icon */}
@@ -136,8 +144,9 @@ export default function VideoShow() {
                                                     opacity: 0.9, // Ensure the icon is visible but not too opaque
                                                     transition: 'all 0.3s ease', // Add a smooth transition effect
                                                     cursor: 'pointer', // Pointer cursor on hover
+                                                    color: theme.palette.mode === 'dark' ? 'rgb(255,241,0)' : 'white', // Icon color based on theme
                                                     '&:hover': {
-                                                        color: 'rgb(255,241,0)', // Change the icon color on hover
+                                                        color: theme.palette.mode === 'dark' ? 'rgb(255,255,150)' : 'rgb(255,241,0)', // Change the icon color on hover based on theme
                                                         opacity: 1,
                                                     },
                                                 }}
@@ -151,6 +160,6 @@ export default function VideoShow() {
                     ))}
                 </Grid>
             </Box>
-        </div>
+        </Box>
     );
 }

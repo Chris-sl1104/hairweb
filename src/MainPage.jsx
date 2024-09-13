@@ -3,12 +3,20 @@ import { Box, useMediaQuery } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+
 
 
 export default function MainPage() {
+    const theme = useTheme();
+    function isDarkMode() {
+        const theme = useTheme(); // Access the current theme
+        return theme.palette.mode === 'dark'; // Returns true if the theme mode is 'dark', false otherwise
+    }
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const videoRef = useRef(null); // Reference to the video element
+    const darkMode = isDarkMode();
 
     // Function to be called when the video has finished loading
     const handleVideoLoaded = () => {
@@ -82,11 +90,13 @@ export default function MainPage() {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.4)'
+                        : 'rgba(0, 0, 0, 0)',
                     pointerEvents: 'none',
                     zIndex: 2,
                 }}
             />
+
 
             {/* Central content */}
             <Box
