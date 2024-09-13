@@ -1,10 +1,12 @@
-import React, { useState, useRef } from "react";
-import { Tabs, Tab, Box, Typography, Container, IconButton, Divider } from "@mui/material";
+import React, {useState, useRef, useEffect} from "react";
+import {Tabs, Tab, Box, Typography, Container, IconButton, Divider, Button} from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import ResponsiveAppBar from "./ResponsiveAppBar.jsx";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from 'react-router-dom';
+import LoadingSpinnerWithRandomSpeed from "./LoadingSpinner.jsx";
 
-// 分类和服务数据
+// Classification and service data
 const services = {
     women: [
         { name: "Haircut", price: "From $35" },
@@ -74,7 +76,7 @@ const services = {
     ]
 };
 
-// 分类名称显示
+// Category name display
 const tabLabels = {
     women: "WOMEN",
     mens: "MENS",
@@ -85,7 +87,15 @@ const tabLabels = {
     other: "OTHER SERVICES"
 };
 
+
+
 const ServiceMenu = () => {
+    const navigate = useNavigate(); // Initialize useNavigate hook
+    const [loading, setLoading] = useState(true);
+
+    const handleBookingClick = () => {
+        navigate('/booking'); // Navigate to /booking when button is clicked
+    };
     const [selectedTab, setSelectedTab] = useState("women");
     const tabsRef = useRef(null);
     const theme = useTheme();
@@ -94,21 +104,35 @@ const ServiceMenu = () => {
         setSelectedTab(newValue);
     };
 
-    // 处理点击左箭头或右箭头时切换类别
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 3000); // Stop the loading animation after 3 seconds
+
+        return () => clearTimeout(timer); // Clear the timer
+    }, []);
+
+    if (loading) {
+        return <LoadingSpinnerWithRandomSpeed />;
+    }
+
+    // Handle switching categories when clicking the left or right arrow
     const handleScroll = (direction) => {
-        const tabKeys = Object.keys(services); // 获取所有类别的 key（例如 "women", "mens" 等）
-        const currentIndex = tabKeys.indexOf(selectedTab); // 获取当前选中 Tab 的索引
+        const tabKeys = Object.keys(services); // Get all the category keys (e.g. "women", "mens", etc.)
+        const currentIndex = tabKeys.indexOf(selectedTab); // Get the index of the currently selected Tab
         let newIndex;
 
         if (direction === "left") {
-            // 如果是向左滚动，切换到前一个类别，若已经是第一个则回到最后一个
+            // If you scroll to the left, switch to the previous category.
+            // If it is already the first one, return to the last one.
             newIndex = currentIndex === 0 ? tabKeys.length - 1 : currentIndex - 1;
         } else {
-            // 如果是向右滚动，切换到下一个类别，若已经是最后一个则回到第一个
+            // If you scroll right, switch to the next category,
+            // if it is the last one, return to the first one
             newIndex = currentIndex === tabKeys.length - 1 ? 0 : currentIndex + 1;
         }
 
-        setSelectedTab(tabKeys[newIndex]); // 设置新的选中 Tab
+        setSelectedTab(tabKeys[newIndex]); // Set new selection Tab
     };
 
     return (
@@ -233,6 +257,41 @@ const ServiceMenu = () => {
                 </Typography>
 
                 <Divider sx={{ marginBottom: 3, backgroundColor: theme.palette.divider }} />
+                <Box
+                    size="large"
+                    sx={{
+                        display: 'flex',
+                        padding: 7,
+                        justifyContent: 'center', // Horizontally center
+                        alignItems: 'center',      // Vertically center
+                        height: '10vh',           // Optional, to center the button vertically relative to the viewport height
+                    }}
+                >
+                    <Button
+                        type="submit"
+                        variant="contained"
+
+                        sx={{
+                            backgroundColor: '#ff8000', // Gold color
+                            color: '#000000',           // White text on the button
+                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                            borderRadius: "3px",
+                            fontSize: '1.2rem',
+                            letterSpacing: '0.1rem',    // Adjust letter spacing here
+                            "&:hover": {
+                                backgroundColor: '#FFC107', // Slightly darker gold on hover
+                                transform: 'scale(1.1)', // Slightly increase size on hover
+                                boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.5)',
+                            },
+
+                        }}
+                        onClick={handleBookingClick}
+                    >
+                        Book now
+                    </Button>
+                </Box>
+
+
 
                 <Box>
                     {services[selectedTab].map((service, index) => (
@@ -250,9 +309,10 @@ const ServiceMenu = () => {
                                 boxShadow: theme.palette.mode === 'dark'
                                     ? '0px 4px 10px rgba(0, 0, 0, 0.5)'
                                     : '0px 2px 8px rgba(0, 0, 0, 0.1)',
-                                transition: 'all 0.3s ease',
+                                transition: 'all 0.2s ease',
                                 '&:hover': {
-                                    boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.3)',
+                                    boxShadow: '0px 15px 25px rgba(0, 0, 0, 0.5)',
+                                    transform: 'scale(1.1)',
                                 }
                             }}
                         >
@@ -265,7 +325,40 @@ const ServiceMenu = () => {
                         </Box>
                     ))}
                 </Box>
+                <Box
+                    size="large"
+                    sx={{
+                        display: 'flex',
+                        padding: 7,
+                        justifyContent: 'center', // Horizontally center
+                        alignItems: 'center',      // Vertically center
+                        height: '10vh',           // Optional, to center the button vertically relative to the viewport height
+                    }}
+                >
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{
+                            backgroundColor: '#ff8000', // Gold color
+                            borderRadius: "3px",
+                            color: '#000000',           // White text on the button
+                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                            fontSize: '1.2rem',
+                            letterSpacing: '0.1rem',    // Adjust letter spacing here
+                            "&:hover": {
+                                backgroundColor: '#FFC107', // Slightly darker gold on hover
+                                transform: 'scale(1.1)', // Slightly increase size on hover
+                                boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.5)',
+                            },
+
+                        }}
+                        onClick={handleBookingClick}
+                    >
+                        Book now in 3 easy steps
+                    </Button>
+                </Box>
             </Container>
+
         </Box>
     );
 };
