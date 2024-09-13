@@ -6,6 +6,9 @@ import axios from 'axios';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
+import { useTheme } from '@mui/material/styles';
+
+
 
 // Function to get the current day of the week
 const getCurrentDay = () => {
@@ -15,6 +18,7 @@ const getCurrentDay = () => {
 };
 
 const Shopping = () => {
+    const theme = useTheme();
     const [items, setItems] = useState([]); // State to store the list of items
     const [loading, setLoading] = useState(true); // State to handle loading
     const [activeIndex, setActiveIndex] = useState(0); // Track the current swipe index
@@ -98,7 +102,8 @@ const Shopping = () => {
                 borderRadius: 3,
                 transition: '0.3s',
                 '&:hover': { boxShadow: 8 }, // Add hover effect
-                background: 'linear-gradient(135deg, #f0f0f0, #fafafa)', // Gradient background
+                backgroundColor: 'white', // Always white background
+                color: 'black', // Always black text
             }}
         >
             <CardMedia
@@ -109,46 +114,64 @@ const Shopping = () => {
                 sx={{ objectFit: 'contain' }}
             />
             <CardContent>
-                <Typography gutterBottom variant="h6" component="div" sx={{ fontSize: { xs: '0.9rem' } }}>
+                <Typography gutterBottom variant="h6" component="div" sx={{ fontSize: { xs: '0.9rem' }, color: 'black' }}>
                     {item.name} {/* Display item name */}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem' } }}>
+                <Typography variant="body2" sx={{ fontSize: { xs: '0.7rem' }, color: 'gray' }}>
                     Price: ${item.price} {/* Display item price */}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontSize: { xs: '0.6rem' } }}>
+                <Typography variant="body2" sx={{ mt: 1, fontSize: { xs: '0.6rem' }, color: 'gray' }}>
                     {item.description?.substring(0, 60)}... {/* Display item description with a limit */}
                 </Typography>
             </CardContent>
             <CardActions sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconButton onClick={() => handleQuantityChange(item.id, -1)}>
-                        <Remove sx={{ fontSize: '0.8rem' }} />
+                        <Remove sx={{ fontSize: '0.8rem', color: 'black' }} /> {/* Ensure minus icon is black */}
                     </IconButton>
                     <TextField
                         value={quantities[item.id] || 1} // Display quantity
-                        inputProps={{ readOnly: true, style: { textAlign: 'center', width: '.9rem' } }} // Input box settings
+                        inputProps={{
+                            readOnly: true,
+                            style: { textAlign: 'center', width: '.9rem', color: 'black' }, // Ensure input text is black
+                        }}
                         variant="outlined"
                         size="small"
-                        sx={{ mx: 1 }}
+                        sx={{
+                            mx: 1,
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'black', // Ensure border is black
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'black', // Ensure hover border remains black
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'black', // Ensure focused border is black
+                                },
+                            },
+                        }}
                     />
                     <IconButton onClick={() => handleQuantityChange(item.id, 1)}>
-                        <Add sx={{ fontSize: '0.8rem' }} />
+                        <Add sx={{ fontSize: '0.8rem', color: 'black' }} /> {/* Ensure plus icon is black */}
                     </IconButton>
                 </Box>
-                <IconButton color="primary" sx={{ padding: '4px' }}>
-                    <Badge badgeContent={quantities[item.id] || 0} color="secondary"> {/* Badge with quantity */}
-                        <AddShoppingCartIcon sx={{ fontSize: '2rem' }} />
+                <IconButton sx={{ padding: '4px' }}>
+                    <Badge badgeContent={quantities[item.id] || 0} sx={{color:'blue'}}> {/* Badge with quantity */}
+                        <AddShoppingCartIcon sx={{ fontSize: '2rem', color:"blue"}} />
                     </Badge>
                 </IconButton>
             </CardActions>
         </Card>
     );
 
+
+
     // Desktop layout logic, with sliding arrows for navigation
     const desktopLayout = (
         <Box sx={{ position: 'relative', padding: 2, overflow: 'hidden' }}>
             <IconButton
-                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem',color: theme.palette.warning.dark,}}
                 onClick={handlePrev}
             >
                 <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -167,7 +190,7 @@ const Shopping = () => {
             </Grid>
 
             <IconButton
-                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem', color: theme.palette.warning.dark,}}
                 onClick={handleNext}
             >
                 <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -179,7 +202,7 @@ const Shopping = () => {
     const mobileLayout = (
         <Box sx={{ position: 'relative', padding: '20px 0', overflow: 'hidden', width: '100vw' }}>
             <IconButton
-                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: theme.palette.warning.dark, }}
                 onClick={handlePrev}
             >
                 <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -212,7 +235,7 @@ const Shopping = () => {
             </SwipeableViews>
 
             <IconButton
-                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: '#ffa83a' }}
+                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: theme.palette.warning.dark,}}
                 onClick={handleNext}
             >
                 <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }}/>
@@ -221,15 +244,19 @@ const Shopping = () => {
     );
 
     return (
-        <Box sx={{ paddingBottom: 20, overflow: "hidden" }}> {/* Wrap the whole page container */}
-            <Divider sx={{ backgroundColor: '#666666', marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto' }} />
+        <Box
+            sx={{ paddingBottom: 20, overflow: "hidden",
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+        }}> {/* Wrap the whole page container */}
+            <Divider sx={{ backgroundColor: theme.palette.divider,marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto', height: "2px"}} />
 
             {/* Add the header content */}
             <Box sx={{ paddingTop: 4, textAlign: 'center' }}>
                 <Typography
                     variant="h4"
                     sx={{
-                        color: '#ffa726',
+                        color: theme.palette.warning.dark,
                         fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem', lg: '3rem', xl: '3.5rem' } // Responsive font sizes
                     }}
                 >
@@ -239,7 +266,7 @@ const Shopping = () => {
                 <Typography
                     variant="body1"
                     sx={{
-                        color: '#fff',
+                        color: theme.palette.text.primary ,
                         marginTop: 2,
                         fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem', lg: '1.6rem', xl: '1.8rem' } // Responsive body1 text
                     }}
@@ -250,7 +277,7 @@ const Shopping = () => {
                 <Typography
                     variant="body2"
                     sx={{
-                        color: '#ffa726',
+                        color: theme.palette.warning.dark,
                         marginTop: 1,
                         fontSize: { xs: '0.8rem', sm: '1rem', md: '1.2rem', lg: '1.4rem', xl: '1.6rem' } // Responsive body2 text
                     }}
