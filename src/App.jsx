@@ -36,7 +36,7 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
+            {/*<CssBaseline />*/}
             <Router>
                 <ResponsiveAppBar />
                 <Routes>
