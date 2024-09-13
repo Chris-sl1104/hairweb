@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppBar, Box, Toolbar, IconButton, Typography, Button, MenuItem } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Button, MenuItem, Slide } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
@@ -20,10 +20,12 @@ const ResponsiveAppBar = () => {
     const dispatch = useDispatch(); // Dispatch for toggling theme mode
 
     const handleOpenNavMenu = () => {
+        console.log("Opening menu");
         setMenuOpen(true); // Open menu
     };
 
     const handleCloseNavMenu = () => {
+        console.log("Closing menu");
         setMenuOpen(false); // Close menu
     };
 
@@ -103,68 +105,60 @@ const ResponsiveAppBar = () => {
                         {isDarkMode ? <ToggleOnIcon sx={{fontSize: "45px"}} /> : <ToggleOffIcon sx={{fontSize: "45px"}} />}
                     </IconButton>
 
-
                     {/* ShoppingCart */}
                     <ShoppingCart />
                 </Toolbar>
             </AppBar>
 
-            {/* Fullscreen Menu with Transition */}
-            <Box
-                sx={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100vw',
-                    height: '100vh',
-                    backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'white',
-                    color: isDarkMode ? 'white' : 'black',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: 0,
-                    margin: 0,
-                    zIndex: 1300,
-                    boxSizing: 'border-box',
-                    overflow: 'hidden',
-
-                    /* Transition effect */
-                    opacity: menuOpen ? 1 : 0,
-                    transform: menuOpen ? 'scale(1)' : 'scale(0.9)', // Scaling effect
-                    transition: 'opacity 0.5s ease, transform 0.5s ease', // Set animation duration and transition effect
-                }}
-            >
-                {menuOpen && (
-                    <>
-                        {/* Menu Items */}
-                        {['Home', 'Shopping', 'Services', 'Booking', 'Contact', 'FAQ'].map((page) => (
-                            <MenuItem
-                                key={page}
-                                component={Link}
-                                to={page.toLowerCase() === 'home' ? '/' : `/${page.toLowerCase()}`}
-                                onClick={handleCloseNavMenu}
-                                sx={{ fontSize: '1.5rem', margin: '1rem' }}
-                            >
-                                {page}
-                            </MenuItem>
-                        ))}
-
-                        {/* Close button */}
-                        <IconButton
+            {/* Fullscreen Menu with Slide Animation */}
+            <Slide direction="down" in={menuOpen} mountOnEnter unmountOnExit>
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'white',
+                        color: isDarkMode ? 'white' : 'black',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: 0,
+                        margin: 0,
+                        zIndex: 1300,
+                        boxSizing: 'border-box',
+                        overflow: 'hidden',
+                    }}
+                >
+                    {/* Menu Items */}
+                    {['Home', 'Shopping', 'Services', 'Booking', 'Contact', 'FAQ'].map((page) => (
+                        <MenuItem
+                            key={page}
+                            component={Link}
+                            to={page.toLowerCase() === 'home' ? '/' : `/${page.toLowerCase()}`}
                             onClick={handleCloseNavMenu}
-                            sx={{
-                                position: 'absolute',
-                                top: '10px',
-                                right: '10px',
-                                color: isDarkMode ? 'white' : 'black',
-                            }}
+                            sx={{ fontSize: '1.5rem', margin: '1rem' }}
                         >
-                            <CloseIcon sx={{ fontSize: 40 }} />
-                        </IconButton>
-                    </>
-                )}
-            </Box>
+                            {page}
+                        </MenuItem>
+                    ))}
+
+                    {/* Close button */}
+                    <IconButton
+                        onClick={handleCloseNavMenu}
+                        sx={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            color: isDarkMode ? 'white' : 'black',
+                        }}
+                    >
+                        <CloseIcon sx={{ fontSize: 40 }} />
+                    </IconButton>
+                </Box>
+            </Slide>
         </>
     );
 };
