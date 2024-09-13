@@ -221,7 +221,7 @@ const Shopping = () => {
     );
 
     return (
-        <Box sx={{ paddingBottom: 20 }}> {/* Wrap the whole page container */}
+        <Box sx={{ paddingBottom: 20, overflow: "hidden" }}> {/* Wrap the whole page container */}
             <Divider sx={{ backgroundColor: '#666666', marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto' }} />
 
             {/* Add the header content */}

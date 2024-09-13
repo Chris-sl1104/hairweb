@@ -38,7 +38,7 @@ export default function Review() {
         <Box
             sx={{
                 position: 'relative',
-                width: '100vw',
+                width: '100%',
                 height: 'auto',
                 backgroundImage: `url(src/Shampoo.jpg)`,
                 backgroundSize: 'cover',
@@ -76,13 +76,13 @@ export default function Review() {
                 }}
             >
                 <Typography
-                    variant="h3"
+                    variant="h5"
                     sx={{
-                        fontSize: { xs: '4rem', sm: '5rem', md: '7rem', lg: '9rem' },
+                        fontSize: { xs: '2.5rem', sm: '4rem', md: '6rem', lg: '8rem' },
                         marginBottom: '1vh',
                     }}
                 >
-                    Testimonials
+                    Voices of Distinction
                 </Typography>
 
                 <Typography
@@ -93,13 +93,13 @@ export default function Review() {
                         fontWeight: { sm: 200, md: 300 },
                     }}
                 >
-                    Our reviews are second to none
+                    Reviews That Speak for Themselves
                 </Typography>
 
                 {/* Content section */}
                 <Grid
                     container
-                    spacing={2}
+                    spacing={5}
                     direction={direction}  // Dynamically set direction based on state
                     alignItems="center"
                     justifyContent="center"
@@ -120,10 +120,11 @@ export default function Review() {
                                 padding: '6%',
                                 backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
                                 borderRadius: '8px',
-                                minHeight: '150px', // Ensure consistent initial height
-                                maxHeight: isExpanded ? '1000px' : '150px', // Remove height limit when expanded
+                                minHeight: {sm: '23vh',md: "30vh"}, // Ensure consistent initial height
+
+                                minWidth: {sm: '30vw', md: '20vw'},
+
                                 display: 'flex',
-                                width: '100%',
                                 maxWidth: setMaxWidth(isSmallScreen, { boxDirection: "left" }),
                                 margin: 'auto',
                                 flexDirection: 'column',
@@ -162,7 +163,7 @@ export default function Review() {
                                     color: 'white',
                                     padding: '10px 10px',
                                     borderRadius: '4px',
-                                    marginBottom: '3px',
+                                    marginBottom: {sm: 1, md: 0},
                                     maxWidth: '80%',
                                     width: '90%',
                                     boxSizing: 'border-box',
@@ -179,12 +180,11 @@ export default function Review() {
                         <Box
                             sx={{
                                 transition: 'all 0.5s ease',
-                                padding: '4%',
+                                padding: '6%',
                                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
                                 borderRadius: '8px',
-                                minHeight: '150px',
+                                minHeight: {sm: '23vh',md: "30vh"}, // Ensure consistent initial height
                                 maxHeight: isExpanded ? '1000px' : '150px', // Control initial height
-                                width: '100%',
                                 maxWidth: setMaxWidth(isSmallScreen, { boxDirection: "right" }),
                                 margin: 'auto',
                                 display: 'flex',
@@ -204,6 +204,7 @@ export default function Review() {
                                     textAlign: 'center',
                                     fontSize: { xs: '1.5rem', md: '2rem' },
                                     marginBottom: '5px',
+                                    marginTop: '5px',
                                 }}
                             >
                                 Latest Reviews
@@ -236,7 +237,7 @@ export default function Review() {
                                             color: 'white',
                                             padding: '10px 10px',
                                             borderRadius: '4px',
-                                            marginBottom: '3px',
+                                            marginBottom: 1,
                                             maxWidth: '80%',
                                             width: '90%',
                                             boxSizing: 'border-box',

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from "./home.jsx"
-import './App.css'
 import MainPage from "./MainPage.jsx";
 import Welcome from "./Welcome.jsx"
 import EmailList from "./EmailList.jsx"
@@ -16,6 +15,8 @@ import Map from "./Map.jsx"
 import Booking from "./Booking.jsx";
 import Checkout from './Checkout.jsx';
 import Result from "./Result.jsx"
+import ContactForm from "./ContactForm.jsx";
+import ServiceMenu from "./ServiceMenu.jsx";
 
 function App() {
     return (
@@ -43,9 +44,11 @@ function App() {
                 />
 
                 {/* Booking 组件单独放在 /booking 页面 */}
-                <Route path="/b" element={<Booking />} />
+                <Route path="/booking" element={<Booking />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/result" element={<Result />} />
+                <Route path="/contact" element={<ContactForm />} />
+                <Route path="/services" element={<ServiceMenu />} />
             </Routes>
         </Router>
     );

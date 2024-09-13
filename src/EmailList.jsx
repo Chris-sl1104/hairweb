@@ -172,7 +172,7 @@ export default function EmailList() {
                         marginBottom: '20px', // Space between title and description
                     }}
                 >
-                    Join our Mailing List
+                    Join our Membership
                 </Typography>
 
                 <Typography
@@ -181,7 +181,7 @@ export default function EmailList() {
                         marginBottom: '40px', // Space between description and input fields
                     }}
                 >
-                    Sign up with your email address to receive news and updates.
+                    Subscribe with your email to stay informed with the latest news and updates
                 </Typography>
 
                 {/* First Name input field */}
@@ -337,7 +337,7 @@ export default function EmailList() {
                         color: '#ffffff', // White text
                     }}
                 >
-                    We respect your privacy.
+                    We safeguard your privacy
                 </Typography>
             </Grid>
 

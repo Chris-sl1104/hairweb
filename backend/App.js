@@ -181,29 +181,43 @@ app.post('/send-email', async (req, res) => {
         // 发送给客户
         await sendEmail(mailOptionsToCustomer);
         const { selectedServices, totalAmount, appointmentTime, totalDuration } = bookingData;
-        const servicesList = selectedServices.map(service => `- ${service.name}: $${service.price}`).join('\n');
-        // 发送通知给老板
-        const mailOptionsToOwner = {
+        if (emailType === 'bookingConfirmation') {
+            // 仅在 emailType 是 bookingConfirmation 时处理 servicesList
+            const servicesList = selectedServices.map(service => `- ${service.name}: $${service.price}`).join('\n');
 
-            from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
-            to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
-            subject: `New ${emailType === 'bookingConfirmation' ? 'Booking' : 'Action'} on your website!`,
-            text: emailType === 'bookingConfirmation'
-                ? `A new booking has been made!\n\n` +
-                `Name: ${firstName} ${lastName}\n` +
-                `Email: ${emailAddress}\n\n` +
-                `Booking Details:\n` +
-                `Service: ${servicesList}\n\n`  + // 展示服务列表
-                `Total Amount: $${totalAmount}\n` +
-                `Total Duration: ${Math.floor(totalDuration / 60)} hours ${totalDuration % 60} minutes\n` + // 显示总时长
-                `Appointment Time: ${new Date(appointmentTime).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}\n\n` + // 格式化时间
-                `Thank you,\nThe Hair Salon Team`
-                : `A user has interacted with your website.\n\nName: ${firstName} ${lastName}\nEmail: ${emailAddress}\nAction: ${emailType}`
-        };
+            // 发送通知给老板
+            const mailOptionsToOwner = {
+                from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
+                to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
+                subject: `New Booking on your website!`,
+                text: `A new booking has been made!\n\n` +
+                    `Name: ${firstName} ${lastName}\n` +
+                    `Email: ${emailAddress}\n\n` +
+                    `Booking Details:\n` +
+                    `Service: ${servicesList}\n\n` +  // 只有在 bookingConfirmation 时生成服务列表
+                    `Total Amount: $${totalAmount}\n` +
+                    `Total Duration: ${Math.floor(totalDuration / 60)} hours ${totalDuration % 60} minutes\n` + // 显示总时长
+                    `Appointment Time: ${new Date(appointmentTime).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}\n\n` + // 格式化时间
+                    `Thank you,\nThe Hair Salon Team`
+            };
 
+            await sendEmail(mailOptionsToOwner);
+        } else {
+            // 如果 emailType 不是 bookingConfirmation，跳过 servicesList 部分，但继续执行其他逻辑
+            const mailOptionsToOwner = {
+                from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
+                to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
+                subject: `New Action on your website!`,
+                text: `A user has interacted with your website.\n\n` +
+                    `Name: ${firstName} ${lastName}\n` +
+                    `Email: ${emailAddress}\n` +
+                    `Action: ${emailType}\n\n` +
+                    `Thank you,\nThe Hair Salon Team`
+            };
 
+            await sendEmail(mailOptionsToOwner);
+        }
 
-        await sendEmail(mailOptionsToOwner);
 
         res.status(200).send('Emails sent successfully');
     } catch (err) {

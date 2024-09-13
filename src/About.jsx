@@ -50,13 +50,14 @@ export default function About() {
                             }}
                         >
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia mi
-                                a sapien varius, et consequat lacus laoreet. Pellentesque habitant morbi
-                                tristique senectus et netus et malesuada fames ac turpis egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia mi
-                                a sapien varius, et consequat lacus laoreet. Pellentesque habitant morbi
-                                tristique senectus et netus et malesuada fames ac turpis egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia mi
-                                a sapien varius, et consequat lacus laoreet. Pellentesque habitant morbi
-                                tristique senectus et netus et malesuada fames ac turpis egestas.
+                                At Kieu's Hair Salon, we’re more than just a place for haircuts—we’re a hub
+                                of creativity and personal expression in the heart of Fitzroy. Established in
+                                1998, we’ve built our reputation on delivering exceptional, tailored services that
+                                go beyond the chair. Our passion lies in blending artistry with technique to
+                                create looks that reflect each client's unique personality and style. Whether
+                                you’re seeking a fresh transformation or maintaining your signature look, our
+                                skilled team is dedicated to making you feel confident, stylish, and at home
+                                with every visit.
                             </p>
                         </Typography>
                     </Box>

@@ -5,10 +5,12 @@
     font-family: 'Antic Didone', serif;
     font-size: 18px; /* 根据需要调整字号 */
     font-weight: 100;
-    /*font-style: oblique;*/
+    color: aliceblue;
 }
 
 .welcomeClass{
     background-color: black;
 }
+
+
 

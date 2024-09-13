@@ -8,7 +8,7 @@ export default function Zitzroy() {
         <Box
             sx={{
                 position: 'relative',
-                width: '100vw', // set to the viewport width
+                width: '100%', // set to the viewport width
                 height: {xs: "50vh", sm: '60vh', md: "70vh"}, // set to 60% of the full screen height
                 backgroundImage: `url(src/Fitzroy.jpg)`, // background image path
                 backgroundSize: 'cover', // background image covers the entire container
@@ -65,7 +65,7 @@ export default function Zitzroy() {
                         fontWeight: { xm: 200, md: 300 }, // Adjust font weight according to screen size
                     }}
                 >
-                    born and bred since 2002
+                    Proudly Rooted Since 1998
                 </Typography>
 
             </Grid>

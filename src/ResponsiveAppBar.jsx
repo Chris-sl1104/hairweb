@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Button, MenuItem} from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Button, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
-import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles'; // Correct import for useTheme
 import { keyframes } from '@mui/system';
 import ShoppingCart from './ShoppingCart';
 
-// Define animation effects
 const fadeIn = keyframes`
     from {
         opacity: 0;
@@ -29,24 +29,13 @@ const slideDown = keyframes`
     }
 `;
 
-const pages = ['Home', 'Services', 'Portfolio', 'Contact'];
+const pages = ['Home', 'Services', 'shopping', 'Booking', 'Contact'];
 
 function ResponsiveAppBar() {
-    const [scrollPosition, setScrollPosition] = useState(0);
     const [anchorElNav, setAnchorElNav] = useState(null);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrollPosition(window.scrollY);
-        };
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
-    const isTransparent = scrollPosition === 0;
+    const theme = useTheme();
+    const isDarkMode = theme.palette.mode === 'dark';  // 检测当前是否为深色模式
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -56,26 +45,40 @@ function ResponsiveAppBar() {
         setAnchorElNav(null);
     };
 
+    // 动态设置字体颜色
+    const fontColor = isDarkMode ? 'white' : 'white';  // 根据模式变化字体颜色
+
     return (
-        <AppBar position="fixed" sx={{
-            backgroundColor: isTransparent ? 'transparent' : 'rgba(0, 0, 0, 0.8)',  // Change background color when scrolling
-            transition: 'background-color 0.3s ease',
-            boxShadow: isTransparent ? 'none' : undefined,  // Remove box shadow when on top
-            zIndex: (theme) => theme.zIndex.drawer + 1
-        }}>
-            <Toolbar>
+        <AppBar
+            position="fixed"
+            sx={{
+                backgroundColor: isDarkMode
+                    ? 'rgba(0,0,0,0.6)'   // 深色模式下的背景颜色透明度
+                    : 'rgba(0,0,0,0.64)',  // 浅色模式下的背景颜色透明度
+                transition: 'background-color 0.3s ease',
+                boxShadow: 'none',  // 不显示阴影
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+            }}
+        >
+            <Toolbar sx={{ minHeight: '64px' }}> {/* 设置导航栏高度为 64px */}
                 {/* Left-side logo */}
                 <Typography
                     variant="h6"
                     component="a"
-                    href=""
+                    href="/"
                     sx={{
                         flexGrow: 1,
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.1rem',
-                        color: 'inherit',
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 500,
+                        letterSpacing: '0.02rem',
+                        color: "white",  // 动态设置字体颜色
                         textDecoration: 'none',
+                        textAlign: 'left',
+                        fontSize: {
+                            xs: '1.2rem',
+                            sm: '1.4rem',
+                            md: '1.6rem',
+                        },
                     }}
                 >
                     Kieu's Hair Salon
@@ -86,8 +89,15 @@ function ResponsiveAppBar() {
                     {pages.map((page) => (
                         <Button
                             key={page}
+                            component={Link}  // Use Link for internal navigation
+                            to={page.toLowerCase() === 'home' ? '/' : `/${page.toLowerCase()}`}  // Set "/" for "Home", lowercase for others
                             onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'white', display: 'block', fontSize: '1rem' }}
+                            sx={{
+                                my: 2,
+                                color: fontColor,  // Dynamically set text color
+                                display: 'block',
+                                fontSize: '1rem',
+                            }}
                         >
                             {page}
                         </Button>
@@ -96,7 +106,7 @@ function ResponsiveAppBar() {
 
                 {/* Menu button (visible on smaller screens) */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                    <IconButton size="large" aria-label="menu" onClick={handleOpenNavMenu} sx={{ color: 'white' }}>
+                    <IconButton size="large" aria-label="menu" onClick={handleOpenNavMenu} sx={{ color: fontColor }}>
                         <MenuIcon />
                     </IconButton>
 
@@ -141,9 +151,9 @@ function ResponsiveAppBar() {
                                             fontSize: '2rem',
                                             padding: '10px 0',
                                             '&:hover': {
-                                                color: '#f50057',  // Hover effect for menu items
+                                                color: '#f50057',
                                                 transform: 'scale(1.1)',
-                                                transition: 'transform 0.2s ease-in-out'
+                                                transition: 'transform 0.2s ease-in-out',
                                             },
                                         }}
                                     >
@@ -163,12 +173,6 @@ function ResponsiveAppBar() {
                 </Box>
 
                 <ShoppingCart />
-                {/* // Shopping cart icon on the right side */}
-                {/* <Box sx={{ flexGrow: 0, display: 'flex', gap: 2 }}>
-                    <IconButton href="/cart" sx={{ color: 'white' }}>
-                        <LocalGroceryStoreIcon />
-                    </IconButton>
-                </Box>*/}
             </Toolbar>
         </AppBar>
     );

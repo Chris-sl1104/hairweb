@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Drawer, IconButton, List, ListItem, ListItemText, Button, Typography, Divider } from '@mui/material';
+import {Box, Drawer, IconButton, List, ListItem, Button, Typography, Divider, Switch} from '@mui/material';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import Brightness4Icon from '@mui/icons-material/Brightness4';  // 引入 Brightness4Icon
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const ShoppingCart = () => {
+    const theme = useTheme(); // 获取当前的主题
     const [cartOpen, setCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState([
         { id: 1, name: 'Shampoo', quantity: 2, price: 12.99 },
@@ -14,7 +18,6 @@ const ShoppingCart = () => {
         { id: 3, name: 'Hair Dryer', quantity: 1, price: 49.99 },
         { id: 4, name: 'Hair Brush', quantity: 3, price: 4.99 }
     ]);
-
 
     const toggleCart = () => {
         setCartOpen(!cartOpen);
@@ -40,7 +43,7 @@ const ShoppingCart = () => {
 
     return (
         <div>
-            <IconButton onClick={toggleCart} sx={{ color: 'white' }}>
+            <IconButton onClick={toggleCart} sx={{ color:'white' }}>
                 <LocalGroceryStoreIcon />
             </IconButton>
 
@@ -56,7 +59,7 @@ const ShoppingCart = () => {
                         borderRadius: '30px',
                         padding: 2,
                         boxShadow: 5,
-                        backgroundColor: '#f9f9f9',
+                        backgroundColor: theme.palette.background.default, // 动态适应主题的背景色
                         overflowY: 'auto',
                     }
                 }}
@@ -67,7 +70,6 @@ const ShoppingCart = () => {
                 <Divider sx={{ mb: 2 }} />
 
                 {cartItems.length === 0 ? (
-                    // Content to display when the cart is empty
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                         <ShoppingCartOutlinedIcon sx={{ fontSize: 60, color: '#c0c0c0', mb: 2 }} />
                         <Typography variant="h6" sx={{ color: '#757575' }}>
@@ -136,4 +138,42 @@ const ShoppingCart = () => {
     );
 };
 
-export default ShoppingCart;
+const App = () => {
+    const [mode, setMode] = useState('light');
+
+    const theme = createTheme({
+        palette: {
+            mode,
+            background: {
+                default: mode === 'light' ? '#f9f9f9' : '#121212',
+            },
+        },
+    });
+
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: {sm: 0, md: 1, lg: 2}}}>
+                {/* 左边的 Brightness4Icon 和 Switch 切换模式 */}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <IconButton
+                        onClick={() => setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'))}
+                        color="inherit"
+                    >
+                        <Brightness4Icon />
+                    </IconButton>
+                    {/* 添加的 Switch 开关 */}
+                    <Switch
+                        checked={mode === 'dark'}
+                        onChange={() => setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'))}
+                    />
+                </Box>
+                {/* 右边的购物车图标 */}
+                <ShoppingCart />
+            </Box>
+        </ThemeProvider>
+
+    );
+};
+
+export default App;

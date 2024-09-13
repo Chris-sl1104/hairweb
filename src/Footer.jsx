@@ -33,8 +33,8 @@ export default function Footer() {
                         33 Rose St, Fitzroy
 
                         <br />
-                        <a href="tel:+61394151717" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
-                            (03) 9415 1717
+                        <a href="tel:0493551300" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
+                            0493 551 0300
                         </a>
                     </Typography>
                     <Typography variant="body2" sx={{ marginTop: '10px' }}>
@@ -48,8 +48,8 @@ export default function Footer() {
                         Buy now, pay later
                     </Typography>
                     <Typography variant="body2">
-                        <a href="#" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
-                            With ZipPay or Afterpay
+                        <a href="/" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
+                            With Afterpay
                         </a>
                     </Typography>
                 </Grid>
@@ -60,7 +60,7 @@ export default function Footer() {
                         Questions?
                     </Typography>
                     <Typography variant="body2">
-                        <a href="#" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
+                        <a href="/faq" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
                             Read our FAQ
                         </a>
                     </Typography>
@@ -117,24 +117,24 @@ export default function Footer() {
                 }}
             >
                 <Typography variant="body2" sx={{ marginBottom: '10px', color: '#FFFFFF' }}>
-                    Made with ❤️ in Fitzroy, Victoria
+                    Made with ❤️ in Melbourne, Victoria
                 </Typography>
                 <Box>
                     {/* Social Media Icons */}
                     <IconButton href="https://instagram.com" sx={{ color: '#FFFFFF', padding: '10px' }}>
-                        <InstagramIcon sx={{ fontSize: '32px' }} />
+                        <InstagramIcon sx={{ fontSize: '50px' }} />
                     </IconButton>
                     <IconButton href="https://facebook.com" sx={{ color: '#FFFFFF', padding: '10px' }}>
-                        <FacebookIcon sx={{ fontSize: '32px' }} />
+                        <FacebookIcon sx={{ fontSize: '50px' }} />
                     </IconButton>
                     <IconButton href="https://twitter.com" sx={{ color: '#FFFFFF', padding: '10px' }}>
-                        <TwitterIcon sx={{ fontSize: '32px' }} />
+                        <TwitterIcon sx={{ fontSize: '50px' }} />
                     </IconButton>
                 </Box>
 
                 {/* Copyright Section */}
                 <Typography variant="body2" sx={{ marginTop: '20px', color: '#AAAAAA' }}>
-                    &copy; 2024 Your Company Name. All rights reserved.
+                    &copy; 2024 Hair Salon Team. All rights reserved.
                 </Typography>
             </Box>
         </Box>

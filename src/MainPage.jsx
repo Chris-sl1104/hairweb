@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function MainPage() {
     const isMobile = useMediaQuery('(max-width: 600px)');
@@ -25,8 +27,10 @@ export default function MainPage() {
         }
     }, []);
 
+    const navigate = useNavigate();
+
     return (
-        <Box sx={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}>
+        <Box sx={{ position: 'relative', height: '100vh', width: '100%', overflow: 'hidden' }}>
             {/* Placeholder image, displayed while the video is loading */}
             {!isVideoLoaded && (
                 <Box
@@ -127,6 +131,7 @@ export default function MainPage() {
                                 boxShadow: '0px 6px 20px rgba(255, 64, 129, 0.7)',
                             },
                         }}
+                        onClick={() => navigate('/b')}
                     >
                         Book Now
                     </Button>

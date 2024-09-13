@@ -44,17 +44,14 @@ export default function Welcome() {
                             margin: {xs: "1rem", md: "2rem"}
                         }}
                     >
-                        Welcome to Cream Melbourne! We're privileged to be situated in the heart of the bohemian
-                        Fitzroy, offering you a peaceful oasis above the bustling Brunswick Street. At our salon, we
-                        believe in breaking the mold when it comes to everyday styling. Our friendly team is always here
-                        to ensure that your visit is unforgettable and has everyone asking, "Who did your hair?"
-
-                        Our philosophy at Cream is to understand your individual preferences and create a stunning look
-                        that complements your unique features and fits your lifestyle. We want your style to be
-                        something you truly adore and feel confident managing, so you can keep returning for more.
-
-                        We can't wait to help you achieve the perfect look that reflects your personality and makes you
-                        feel fabulous!
+                        Welcome to Kieu's Hair Salon! Nestled in the vibrant heart of Fitzroy,
+                        we take pride in offering a serene escape from the lively streets below.
+                        At Kieu's, we believe that great hair is about more than just style—it’s about expression, confidence,
+                        and individuality. Our passionate team is dedicated to understanding your unique vision
+                        and creating a look that highlights your natural beauty and complements your lifestyle.
+                        Whether it’s a fresh new cut or maintaining your signature style,
+                        we’re here to ensure you leave feeling your absolute best.
+                        We look forward to helping you discover the perfect look that’s effortlessly you!
                     </Typography>
                 </Grid>
                 <Grid item xs={12} md={6} sx={{

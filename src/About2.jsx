@@ -9,6 +9,7 @@ export default function About2() {
             sx={{
                 display: 'flex',
                 alignItems: 'center',
+                width: "100%",
                 justifyContent: 'center',
                 minHeight: '40vh',
                 margin: 0,      // Ensures there is no external margin
@@ -38,7 +39,7 @@ export default function About2() {
                                 textAlign: { xs: 'center', md: 'left' }, // Center alignment for small screens, left alignment for larger screens
                             }}
                         >
-                            Excellence is our culture.
+                            Style, Crafted to Perfection
                         </Typography>
                     </Box>
                 </Grid>
@@ -56,10 +57,10 @@ export default function About2() {
                                 textAlign: { xs: 'center', md: 'left' }, // Center alignment for small screens, left alignment for larger screens
                             }}
                         >
-                            Keeping up with the trends is not easy in today’s world.
-                            But here at Cream Melbourne, it’s what we thrive on.
-                            Our daily lives are spent keeping an eye on the media and the
-                            street, always at the cutting edge of what is in and what is out.
+                            At Kieu's Hair Salon in Fitzroy, we don’t just follow trends—we create them.
+                            Our expert stylists craft personalized looks that make a statement,
+                            ensuring you leave feeling confident and refreshed. Whether you're after a bold change or a subtle update,
+                            we’re here to help you stand out with style.
                         </Typography>
                     </Box>
                 </Grid>
