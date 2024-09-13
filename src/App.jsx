@@ -16,13 +16,14 @@ import Checkout from './Checkout.jsx';
 import Result from "./Result.jsx";
 import ContactForm from "./ContactForm.jsx";
 import ServiceMenu from "./ServiceMenu.jsx";
-import ResponsiveAppBar from './ResponsiveAppBar'; // 导入导航栏
+import ResponsiveAppBar from './ResponsiveAppBar'; // Import Navigation Bar
 import { Provider, useSelector } from 'react-redux';
-import { store } from './redux/store';  // 导入 Redux Store
+import { store } from './redux/store';  // Import Redux Store
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import FAQPage from "./FAQPage.jsx";
 
 function App() {
-    const mode = useSelector((state) => state.theme.mode); // 获取 Redux 中的 mode
+    const mode = useSelector((state) => state.theme.mode); // Get Redux mode
 
     const theme = createTheme({
         palette: {
@@ -45,6 +46,7 @@ function App() {
                     <Route path="/result" element={<Result />} />
                     <Route path="/contact" element={<ContactForm />} />
                     <Route path="/services" element={<ServiceMenu />} />
+                    <Route path="/faq" element={<FAQPage />} />
                 </Routes>
             </Router>
         </ThemeProvider>
