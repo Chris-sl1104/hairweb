@@ -122,12 +122,15 @@ const Booking = () => {
         });
     };
 
+    const getOppositeColor = () => {
+        return theme.palette.mode === 'light' ? 'rgba(0,0,0,0.64)' : 'rgba(0,0,0,0.64)';
+    };
+
     return (
         <Box
             sx={{
-                paddingTop: '5rem',
+                paddingTop: '6rem',
                 paddingX: 3,
-                paddingBottom: 3,
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
                 maxWidth: '100%',
@@ -138,7 +141,13 @@ const Booking = () => {
             }}
         >
             {/* Left side: Service categories and service list */}
-            <Box flex={isMobile ? 1 : 0.7} p={isMobile ? 0.05 : 2} sx={{ overflowY: 'auto', maxHeight: '90vh', maxWidth: '90vw', overflowX: 'hidden' }}>
+            <Box flex={isMobile ? 1 : 0.7} p={isMobile ? 0.05 : 2}
+                 sx={{ overflowY: 'auto',
+                     maxHeight: '90vh',
+                     maxWidth: '90vw',
+                     overflowX: 'hidden',
+                     paddingBottom:"5rem",
+            }}>
                 <Typography variant="h5" mb={2} color="text.primary" fontWeight="bold">
                     Select services
                 </Typography>
@@ -182,21 +191,38 @@ const Booking = () => {
                                     borderRadius: 2,
                                     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
                                     transition: 'transform 0.3s ease-in-out',
-                                    '&:hover': { transform: 'scale(1.03)',
+                                    backgroundColor: theme.palette.background.paper,
+                                    color: theme.palette.text.primary,
+                                    '&:hover': {
+                                        transform: 'scale(1.03)',
                                         backgroundColor: theme.palette.warning.light,
                                         boxShadow: '0 10px 20px rgba(255,153,18, 0.5)',
+                                        // Apply hover styles to child text components
+                                        '& .MuiTypography-root': {
+                                            color: getOppositeColor(),
+                                        },
+
                                     },
-                                    backgroundColor: theme.palette.background.paper,
-                                    color: theme.palette.text.primary
                                 }}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={9}>
                                             <ListItemText
                                                 primary={service.name}
                                                 secondary={`${service.description} from $${service.price}`}
-                                                primaryTypographyProps={{ color: theme.palette.text.primary }}
-                                                secondaryTypographyProps={{ color: theme.palette.text.secondary }}
+                                                primaryTypographyProps={{
+                                                    sx: {
+                                                        color: theme.palette.text.primary,
+                                                        //transition: 'color 0.3s ease-in-out', // Smooth color transition
+                                                    },
+                                                }}
+                                                secondaryTypographyProps={{
+                                                    sx: {
+                                                        color: theme.palette.text.secondary,
+                                                        //transition: 'color 0.3s ease-in-out', // Smooth color transition
+                                                    },
+                                                }}
                                             />
+
                                         </Grid>
                                         <Grid item xs={3} display="flex" justifyContent="flex-end">
                                             <IconButton onClick={() => addService(service)}>
@@ -235,30 +261,42 @@ const Booking = () => {
                             {selectedServices.map((serviceId) => {
                                 const service = Object.values(servicesData).flat().find(s => s.id === serviceId);
                                 return (
-                                    <ListItem key={service.id}>
-                                        <ListItemText
-                                            primary={service.name}
-                                            secondary={`$${service.price} · ${formatDuration(service.duration)}`}
-                                            primaryTypographyProps={{ color: theme.palette.text.primary }}
-                                            secondaryTypographyProps={{ color: theme.palette.text.secondary }}
-                                        />
-                                    </ListItem>
+                                    <>
+                                        <ListItem key={service.id}>
+                                            <ListItemText
+                                                primary={service.name}
+                                                secondary={`$${service.price} · ${formatDuration(service.duration)}`}
+                                                primaryTypographyProps={{color: theme.palette.text.primary}}
+                                                secondaryTypographyProps={{color: theme.palette.text.secondary}}
+                                            />
+
+                                        </ListItem>
+
+                                    </>
+
                                 );
                             })}
+
+
                         </List>
                     )}
-                    <Divider sx={{ my: 2 }} />
+                    <Divider sx={{my: 2}}/>
                     <Typography variant="h6" color="text.primary">Total: ${totalAmount}</Typography>
-                    <Typography variant="body1" color="text.secondary">Total Duration: {formatDuration(totalDuration)}</Typography>
+                    <Typography variant="body1" color="text.secondary">Total
+                        Duration: {formatDuration(totalDuration)}</Typography>
                     <Button variant="contained" color="warning" fullWidth
-                            sx={{ mt: 2,
-                                '&:hover': { transform: 'scale(1.05)',
+                            sx={{
+                                mt: 2,
+                                transition: 'transform 0.3s ease-in-out',
+                                '&:hover': {
+                                    transform: 'scale(1.05)',
                                     backgroundColor: theme.palette.warning.main,
                                     boxShadow: '0 10px 20px rgba(255,153,18, 0.7)',
                                 },
-                    }} onClick={handleContinue}>
+                            }} onClick={handleContinue}>
                         Continue
                     </Button>
+
                 </Box>
             )}
 
@@ -289,13 +327,14 @@ const Booking = () => {
                         >
                             Continue
                         </Button>
+
                     </Box>
 
                     <Drawer
                         anchor="bottom"
                         open={drawerOpen}
                         onClose={handleDrawerClose}
-                        PaperProps={{ sx: { maxHeight: '60%' } }}
+                        PaperProps={{ sx: { maxHeight: '80%' } }}
                     >
                         <Box p={2}>
                             <Typography variant="h6" fontWeight="bold" color="text.primary">Selected Services</Typography>

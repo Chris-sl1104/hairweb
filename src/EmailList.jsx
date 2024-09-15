@@ -97,7 +97,9 @@ export default function EmailList() {
                     recaptchaTokenV2: v2Token,  // reCAPTCHA v2 token
                     recaptchaToken: token,  // reCAPTCHA enterprise token
                     emailType: 'signupConfirmation',
-                    bookingData: {}
+                    bookingData: {},
+                    message:'',
+                    cartDetails: {},
                 }),
             });
 
@@ -201,14 +203,26 @@ export default function EmailList() {
                         maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
                         width: '90%',
                         boxSizing: 'border-box', // Include padding in the width
+                        '& label': {
+                            color: 'grey', // Default label color
+                        },
                         '& label.Mui-focused': {
-                            color: 'black',
+                            color: 'black', // Focused label color
                         },
                         '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: 'black', // Default border color
+                            },
                             '&.Mui-focused fieldset': {
-                                borderColor: 'black',
-                            }
-                        }
+                                borderColor: 'black', // Focused border color
+                            },
+                        },
+                        '& .MuiInputBase-input': {
+                            color: 'black', // Input text color
+                        },
+                        '& .MuiFormHelperText-root': {
+                            color: 'red', // Helper text color, especially for errors
+                        },
                     }}
                 />
 
@@ -229,14 +243,26 @@ export default function EmailList() {
                         maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
                         width: '90%',
                         boxSizing: 'border-box', // Include padding in the width
+                        '& label': {
+                            color: 'grey', // Default label color
+                        },
                         '& label.Mui-focused': {
-                            color: 'black',
+                            color: 'black', // Focused label color
                         },
                         '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: 'black', // Default border color
+                            },
                             '&.Mui-focused fieldset': {
-                                borderColor: 'black',
-                            }
-                        }
+                                borderColor: 'black', // Focused border color
+                            },
+                        },
+                        '& .MuiInputBase-input': {
+                            color: 'black', // Input text color
+                        },
+                        '& .MuiFormHelperText-root': {
+                            color: 'red', // Helper text color, especially for errors
+                        },
                     }}
                 />
 
@@ -257,14 +283,26 @@ export default function EmailList() {
                         maxWidth: { xs: '60%', sm: '80%', md: '100%' }, // Responsive width
                         width: '90%',
                         boxSizing: 'border-box', // Include padding in the width
+                        '& label': {
+                            color: 'grey', // Default label color
+                        },
                         '& label.Mui-focused': {
-                            color: 'black',
+                            color: 'black', // Focused label color
                         },
                         '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: 'black', // Default border color
+                            },
                             '&.Mui-focused fieldset': {
-                                borderColor: 'black',
-                            }
-                        }
+                                borderColor: 'black', // Focused border color
+                            },
+                        },
+                        '& .MuiInputBase-input': {
+                            color: 'black', // Input text color
+                        },
+                        '& .MuiFormHelperText-root': {
+                            color: 'red', // Helper text color, especially for errors
+                        },
                     }}
                 />
 

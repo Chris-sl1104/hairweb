@@ -78,7 +78,7 @@ export default function Review() {
                 <Typography
                     variant="h5"
                     sx={{
-                        fontSize: { xs: '2.5rem', sm: '4rem', md: '6rem', lg: '8rem' },
+                        fontSize: { xs: '2.5rem', sm: '3rem', md: '5rem', lg: '7rem' },
                         marginBottom: '1vh',
                     }}
                 >

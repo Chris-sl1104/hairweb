@@ -5,9 +5,14 @@ import { Phone } from '@mui/icons-material';
 import { useTheme } from "@mui/material/styles";
 import Map from "./Map";
 import Footer from "./Footer.jsx";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CircularProgress from '@mui/material/CircularProgress';
 import LoadingSpinnerWithRandomSpeed from "./LoadingSpinner.jsx";
 
-const ContactForm = ({ mode, toggleMode }) => {
+const ContactForm = () => {
     const theme = useTheme();
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
@@ -16,19 +21,47 @@ const ContactForm = ({ mode, toggleMode }) => {
         email: "",
         message: "",
     });
+    const [formErrors, setFormErrors] = useState({}); // Used to store form error status
+    const [isSubmitting, setIsSubmitting] = useState(false); // Tracks form submission status
+    const [dialogOpen, setDialogOpen] = useState(false); // Controls whether the dialog is displayed
+    const [dialogContent, setDialogContent] = useState(''); // Stores the content for the dialog
+    const [v2Token, setV2Token] = useState(''); // Stores the reCAPTCHA v2 token
 
+
+    // Load reCAPTCHA v2 script
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 3000); // Stop the loading animation after 3 seconds
+        const script = document.createElement('script');
+        script.src = "https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad";
+        script.async = true;
+        script.defer = true;
 
-        return () => clearTimeout(timer); // Clear the timer
+        // 定义全局 onload 函数，在 reCAPTCHA 脚本加载完成后调用
+        window.onRecaptchaLoad = () => {
+            console.log('reCAPTCHA script loaded successfully');
+        };
+
+        // 设置 reCAPTCHA v2 回调函数
+        window.onRecaptchaV2Success = (token) => {
+            setV2Token(token);
+        };
+
+        document.body.appendChild(script);
+
+        return () => {
+            // 清理 script 标签
+            document.body.removeChild(script);
+        };
     }, []);
+    useEffect(() => {
+        // 在 useEffect 内部进行条件判断
+        if (!loading) {
+            const timer = setTimeout(() => {
+                setLoading(false);
+            }, 3000);
 
-    if (loading) {
-        return <LoadingSpinnerWithRandomSpeed />;
-    }
-
+            return () => clearTimeout(timer);
+        }
+    }, [loading]); // 依赖项设置为 loading
 
 
 
@@ -40,9 +73,77 @@ const ContactForm = ({ mode, toggleMode }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    // Handles form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form data submitted:", formData);
+
+        // Validate that the required fields are not empty
+        const errors = {};
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email format validation regex
+        if (!formData.firstName) errors.firstName = 'First Name is required';  // Check if first name is empty
+        if (!formData.lastName) errors.lastName = 'Last Name is required';    // Check if last name is empty
+        if (!formData.message) errors.message = 'Message is required';
+        if (!formData.emailAddress) {
+            errors.emailAddress = 'Email Address is required';  // Check if email is empty
+        } else if (!emailRegex.test(formData.emailAddress)) {
+            errors.emailAddress = 'Please enter a valid email address';  // Validate email format
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);  // If errors exist, display them
+            return;
+        }
+
+        // Ensure reCAPTCHA v2 is completed
+        if (!v2Token) {
+            setDialogContent('Please complete the reCAPTCHA v2');  // Prompt user to complete reCAPTCHA
+            setDialogOpen(true);  // Open the dialog to display the message
+            return;
+        }
+
+        setFormErrors({});  // Clear any previous error messages
+        setIsSubmitting(true);  // Set the submission state to true to show loading animation
+
+        try {
+            // Perform reCAPTCHA enterprise validation
+            const token = await window.grecaptcha.enterprise.execute('6LfsEToqAAAAAMC8N5ActNXZ5Q6mUhywhF83ys39', { action: 'submit' });
+
+            // Submit form data along with the reCAPTCHA tokens
+            const response = await fetch('http://192.168.0.108:5000/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData,  // Form data: first name, last name, and email
+                    recaptchaTokenV2: v2Token,  // reCAPTCHA v2 token
+                    recaptchaToken: token,  // reCAPTCHA enterprise token
+                    emailType: 'sendMessage',
+                    message: formData.message,
+                    bookingData: {},
+                    cartDetails:{},
+                }),
+            });
+
+            if (response.ok) {
+                setDialogContent('You message has been sent successfully!');  // Success message on successful sign-up
+                setFormData({ firstName: '', lastName: '', emailAddress: '' });  // Clear form fields after submission
+            } else {
+                setDialogContent('There was an issue with your message. Please try again.');  // Error message on failure
+            }
+            setDialogOpen(true);  // Display dialog with the result
+        } catch (error) {
+            console.error('Error:', error);
+            setDialogContent('There was an error processing your request.');  // General error message
+            setDialogOpen(true);  // Display dialog with error message
+        } finally {
+            setIsSubmitting(false);  // Reset the submission state after form handling completes
+        }
+    };
+
+    // Function to close the dialog
+    const handleDialogClose = () => {
+        setDialogOpen(false);  // Set the dialog state to closed
     };
 
     return (
@@ -130,6 +231,7 @@ const ContactForm = ({ mode, toggleMode }) => {
 
                                 {/* First Name Field */}
                                 <TextField
+                                    id="firstName"
                                     label="First Name"
                                     name="firstName"
                                     variant="outlined"
@@ -137,6 +239,8 @@ const ContactForm = ({ mode, toggleMode }) => {
                                     required
                                     value={formData.firstName}
                                     onChange={handleChange}
+                                    error={!!formErrors.firstName} // Display error styling if there is an error
+                                    helperText={formErrors.firstName} // Show error message if any
                                     sx={{
                                         backgroundColor: theme.palette.background.paper,
                                         color: theme.palette.text.primary,
@@ -153,6 +257,7 @@ const ContactForm = ({ mode, toggleMode }) => {
 
                                 {/* Last Name Field */}
                                 <TextField
+                                    id="lastName"
                                     label="Last Name"
                                     name="lastName"
                                     variant="outlined"
@@ -160,6 +265,8 @@ const ContactForm = ({ mode, toggleMode }) => {
                                     required
                                     value={formData.lastName}
                                     onChange={handleChange}
+                                    error={!!formErrors.lastName} // Display error styling if there is an error
+                                    helperText={formErrors.lastName} // Show error message if any
                                     sx={{
                                         backgroundColor: theme.palette.background.paper,
                                         color: theme.palette.text.primary,
@@ -177,13 +284,16 @@ const ContactForm = ({ mode, toggleMode }) => {
                                 {/* Email Field */}
                                 <TextField
                                     label="Email"
-                                    name="email"
+                                    name="emailAddress"
                                     variant="outlined"
+                                    id="emailAddress"
                                     fullWidth
                                     required
                                     type="email"
-                                    value={formData.email}
+                                    value={formData.emailAddress}
                                     onChange={handleChange}
+                                    error={!!formErrors.emailAddress} // Display error styling if there is an error
+                                    helperText={formErrors.emailAddress} // Show error message if any
                                     sx={{
                                         backgroundColor: theme.palette.background.paper,
                                         color: theme.palette.text.primary,
@@ -200,6 +310,7 @@ const ContactForm = ({ mode, toggleMode }) => {
 
                                 {/* Message Field */}
                                 <TextField
+                                    id="message"
                                     label="Message"
                                     name="message"
                                     variant="outlined"
@@ -209,6 +320,8 @@ const ContactForm = ({ mode, toggleMode }) => {
                                     rows={4}
                                     value={formData.message}
                                     onChange={handleChange}
+                                    error={!!formErrors.message} // Display error styling if there is an error
+                                    helperText={formErrors.message} // Show error message if any
                                     sx={{
                                         backgroundColor: theme.palette.background.paper,
                                         color: theme.palette.text.primary,
@@ -223,11 +336,32 @@ const ContactForm = ({ mode, toggleMode }) => {
                                     }}
                                 />
 
+                                {/* reCAPTCHA widget */}
+                                <Box
+                                    sx={{
+                                        display: 'inline-block',
+                                        maxWidth: '100%', // Ensure reCAPTCHA does not exceed container width
+                                    }}
+                                >
+                                    <div
+                                        className="g-recaptcha"
+                                        data-sitekey="6LcPYzoqAAAAANByR-t19h3vZImim9wQH7gVQLy0"
+                                        data-callback="onRecaptchaV2Success"
+                                        style={{
+                                            transform: 'scale(0.80)',  // Scale down the reCAPTCHA widget
+                                            transformOrigin: '0 0',   // Scale from the top-left corner
+                                        }}
+                                    ></div>
+                                </Box>
+
                                 {/* Submit Button */}
                                 <Button
                                     type="submit"
                                     variant="contained"
+                                    onClick={handleSubmit}
+                                    disabled={isSubmitting} // Disable button when submitting
                                     sx={{
+                                        fontSize : "1.1rem",
                                         backgroundColor: theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000', // White in dark mode, black in light mode
                                         color: theme.palette.mode === 'dark' ? '#000000' : '#FFFFFF', // Black text in dark mode, white text in light mode
                                         "&:hover": {
@@ -235,8 +369,21 @@ const ContactForm = ({ mode, toggleMode }) => {
                                         },
                                     }}
                                 >
-                                    Send
+                                    {/* Show loading animation during submission */}
+                                    {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'SEND'}
                                 </Button>
+                                {/* Dialog component for notifications */}
+                                <Dialog open={dialogOpen} onClose={handleDialogClose}>
+                                    <DialogTitle>Notification</DialogTitle>
+                                    <DialogContent>
+                                        <Typography>{dialogContent}</Typography>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDialogClose} color="primary">
+                                            Close
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
 
                             </Box>
                         </Grid>

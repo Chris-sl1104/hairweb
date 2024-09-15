@@ -133,6 +133,8 @@ const Checkout = () => {
                     recaptchaToken: token, // If the reCAPTCHA token is needed
                     recaptchaTokenV2: v2Token,  // reCAPTCHA v2 token
                     bookingData: bookingData,
+                    message: '',
+                    cartDetails:{},
                 });
 
                 if (emailResponse.status === 200) {
@@ -173,7 +175,7 @@ const Checkout = () => {
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography variant="h4" sx={{ mr: 2 }} gutterBottom>
+                <Typography variant="h4" sx={{ mr: 2, color: theme.palette.text.primary }} gutterBottom>
                     Checkout
                 </Typography>
                 <InfoIcon sx={{  width: '40px', height: '40px' , transform: 'translateY(-4px)' , color: isDarkMode ? '#f5f5f5' : 'rgba(0,0,0,0.64)', mr: 1 }} />
@@ -186,12 +188,14 @@ const Checkout = () => {
                         <ListItemText
                             primary={service.name}
                             secondary={`$${service.price} · ${Math.floor(service.duration / 60)} hr ${service.duration % 60} min`}
+                            primaryTypographyProps={{ color: theme.palette.text.primary }}
+                            secondaryTypographyProps={{color: theme.palette.text.secondary}}
                         />
                     </ListItem>
                 ))}
             </List>
             <Divider sx={{my: 2}}/>
-            <Typography variant="h6">Total: ${totalAmount}</Typography>
+            <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>Total: ${totalAmount}</Typography>
             <Typography variant="body1" color="textSecondary">Total
                 Duration: {Math.floor(totalDuration / 60)} hr {totalDuration % 60} min</Typography>
 
@@ -256,7 +260,7 @@ const Checkout = () => {
             />
 
             {/* Date picker */}
-            <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>Select Appointment Time</Typography>
+            <Typography variant="h6" gutterBottom sx={{ mt:3, color: theme.palette.text.primary }}>Select Appointment Time:</Typography>
 
             {loading ? (
                 <CircularProgress/>
@@ -309,7 +313,7 @@ const Checkout = () => {
                 onClick={handleConfirmBooking}
                 disabled={isSubmitting}
             >
-                {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'SIGN UP'}
+                {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'confirm booking'}
             </Button>
 
             {/* Dialog component for notifications */}
