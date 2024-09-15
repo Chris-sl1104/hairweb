@@ -87,7 +87,16 @@ const sendEmail = async (mailOptions) => {
 
 // Email sending logic
 app.post('/send-email', async (req, res) => {
-    const { firstName, lastName, emailAddress, bookingData, recaptchaToken, recaptchaTokenV2, emailType } = req.body;
+    const { firstName,
+        lastName,
+        emailAddress,
+        bookingData,
+        recaptchaToken,
+        recaptchaTokenV2,
+        emailType,
+        cartDetails,
+        message
+    } = req.body;
 
     // Verify reCAPTCHA v2 token
     try {
@@ -165,6 +174,41 @@ app.post('/send-email', async (req, res) => {
                 subject: 'Thank you for signing up!',
                 text: `Hello ${firstName},\n\nThank you for joining our mailing list! We're excited to have you with us.\n\nBest regards,\nThe Hair Salon Team`
             };
+        } else if (emailType === 'sendMessage') {
+            // Client message
+            mailOptionsToCustomer = {
+                from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
+                to: emailAddress,
+                subject: 'Thank you for your message!',
+                text: `Hello ${firstName},\n\nThank you for your message! We have received that and we will get back to you as soon as possible\n\nBest regards,\nThe Hair Salon Team`
+            };
+        } else if (emailType === 'shopRequest') {
+            // 构建购物车产品信息字符串
+            let cartDetailsText = '';
+            if (cartDetails && cartDetails.length > 0) {
+                cartDetails.forEach((item, index) => {
+                    cartDetailsText += `${index + 1}. ${item.name} - Quantity: ${item.quantity}, Price: $${item.price}, Total: $${item.total}\n`;
+                });
+            } else {
+                cartDetailsText = 'No items in the cart.\n';
+            }
+            // 计算购物车总金额
+            const totalAmount = cartDetails.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+
+            // Shopping Confirmation message
+            mailOptionsToCustomer = {
+                from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
+                to: emailAddress,
+                subject: 'Thank You for Your Purchase!',
+                text: `Dear ${firstName},\n\nThank you for shopping with us at The Hair Salon! 
+We have successfully received your order and it is now being processed. Here is a summary of your purchase:\n\n
+${cartDetailsText}\n
+Total Amount: $${totalAmount}\n\n
+If you have any questions or need further assistance, 
+please don't hesitate to contact us.\n\n
+Thank you for choosing The Hair Salon, and we look forward to serving you again!\n\n
+Warm regards,\nThe Hair Salon Team`
+            };
         } else {
             // Default Email
             mailOptionsToCustomer = {
@@ -185,7 +229,7 @@ app.post('/send-email', async (req, res) => {
             // Send a notification to your boss
             const mailOptionsToOwner = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
-                to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
+                to: process.env.OWNER_EMAIL,
                 subject: `New Booking on your website!`,
                 text: `A new booking has been made!\n\n` +
                     `Name: ${firstName} ${lastName}\n` +
@@ -199,12 +243,59 @@ app.post('/send-email', async (req, res) => {
             };
 
             await sendEmail(mailOptionsToOwner);
-        } else {
+        } else if(emailType === 'sendMessage') {
+            const mailOptionsToOwner = {
+                from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
+                to: process.env.OWNER_EMAIL,
+                subject: `New Message from your Customer!`,
+                text: `A user has left a message on your website.\n\n` +
+                    `Name: ${firstName} ${lastName}\n` +
+                    `Email: ${emailAddress}\n` +
+                    `Action: ${emailType}\n\n` +
+                    `The customer has left a message: \n\n"${message}".\n\n` +
+                    `If you wish to reply, please reply to customer's email: ${emailAddress}.\n\n` +
+                    `Thank you,\nThe Hair Salon Team`
+            };
+
+            await sendEmail(mailOptionsToOwner);
+        } else if (emailType === 'shopRequest') {
+            // 构建购物车产品信息字符串
+            let cartDetailsText = '';
+            if (cartDetails && cartDetails.length > 0) {
+                cartDetails.forEach((item, index) => {
+                    cartDetailsText += `${index + 1}. ${item.name} - Quantity: ${item.quantity}, Price: $${item.price}, Total: $${item.total}\n`;
+                });
+            } else {
+                cartDetailsText = 'No items in the cart.\n';
+            }
+            // 计算购物车总金额
+            const totalAmount = cartDetails.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+            const messageText = message ? `The customer also left an Additional Note: "${message}".\n\n` : 'The customer did not leave any additional notes.\n\n';
+            // 邮件选项，发送给店主
+            const mailOptionsToOwner = {
+                from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
+                to: process.env.OWNER_EMAIL,
+                subject: `New Message from your Customer!`,
+                text: `A user has left a message on your website.\n\n` +
+                    `Name: ${firstName} ${lastName}\n` +
+                    `Email: ${emailAddress}\n` +
+                    `Action: ${emailType}\n\n` +
+                    `The customer has purchased the following products:\n\n` +
+                    `${cartDetailsText}\n` +  // 添加购物车详情
+                    `Total Amount: $${totalAmount}\n\n` +  // 添加总金额
+                    `${messageText}".\n\n` +
+                    `If you wish to reply, please reply to customer's email: ${emailAddress}.\n\n` +
+                    `Thank you,\nThe Hair Salon Team`
+            };
+
+            await sendEmail(mailOptionsToOwner);
+        }
+        else {
             // If emailType is not bookingConfirmation,
             // skip the servicesList part but continue to execute other logic
             const mailOptionsToOwner = {
                 from: `The Hair Salon Team <${process.env.EMAIL_USER}>`,
-                to: process.env.OWNER_EMAIL, // 发送给老板的邮箱地址
+                to: process.env.OWNER_EMAIL,
                 subject: `New Action on your website!`,
                 text: `A user has interacted with your website.\n\n` +
                     `Name: ${firstName} ${lastName}\n` +

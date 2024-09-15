@@ -19,8 +19,10 @@ import ServiceMenu from "./ServiceMenu.jsx";
 import ResponsiveAppBar from './ResponsiveAppBar'; // Import Navigation Bar
 import { Provider, useSelector } from 'react-redux';
 import { store } from './redux/store';  // Import Redux Store
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material';
 import FAQPage from "./FAQPage.jsx";
+import ShoppingPage from "./ShoppingPage.jsx";
+import Shopcheckout from "./Shopcheckout.jsx";
 
 function App() {
     const mode = useSelector((state) => state.theme.mode); // Get Redux mode
@@ -36,7 +38,6 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            {/*<CssBaseline />*/}
             <Router>
                 <ResponsiveAppBar />
                 <Routes>
@@ -47,6 +48,8 @@ function App() {
                     <Route path="/contact" element={<ContactForm />} />
                     <Route path="/services" element={<ServiceMenu />} />
                     <Route path="/faq" element={<FAQPage />} />
+                    <Route path="/shopping" element={<ShoppingPage />} />
+                    <Route path="/shopcheckout" element={<Shopcheckout />} />
                 </Routes>
             </Router>
         </ThemeProvider>
