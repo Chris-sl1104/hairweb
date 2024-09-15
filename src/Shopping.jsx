@@ -1,5 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Card, CardContent, Typography, Divider, CardMedia, CardActions, CircularProgress, Box, IconButton, TextField, Badge } from '@mui/material';
+import {
+    Grid,
+    Card,
+    CardContent,
+    Typography,
+    Divider,
+    CardMedia,
+    CardActions,
+    Modal,
+    CircularProgress,
+    Box,
+    IconButton,
+    TextField,
+    Badge,
+    Snackbar,
+    Alert,
+    Button
+} from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 import { ArrowBackIos, ArrowForwardIos, Add, Remove } from '@mui/icons-material';
 import axios from 'axios';
@@ -7,8 +24,8 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
 import ArrowCircleLeftRoundedIcon from '@mui/icons-material/ArrowCircleLeftRounded';
 import { useTheme } from '@mui/material/styles';
-
-
+import { useSelector, useDispatch } from 'react-redux'; // 使用 Redux
+import { addItem, updateQuantity } from './redux/cartSlice'; // 导入 Redux actions
 
 // Function to get the current day of the week
 const getCurrentDay = () => {
@@ -19,12 +36,17 @@ const getCurrentDay = () => {
 
 const Shopping = () => {
     const theme = useTheme();
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [info, setInfo] = useState('');
     const [items, setItems] = useState([]); // State to store the list of items
     const [loading, setLoading] = useState(true); // State to handle loading
     const [activeIndex, setActiveIndex] = useState(0); // Track the current swipe index
     const [quantities, setQuantities] = useState({}); // Store the quantity of each item
     const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Get window width for responsive design
     const [currentDay, setCurrentDay] = useState('For Today'); // Store the current day
+
+    const dispatch = useDispatch(); // Get dispatch function from Redux
+    const cartItems = useSelector((state) => state.cart.items); // Get cart items from Redux store
 
     useEffect(() => {
         // Set the current day in the state
@@ -66,13 +88,36 @@ const Shopping = () => {
     const isLg = windowWidth >= 1200; // Define large screen breakpoint
     const isMd = windowWidth >= 900 && windowWidth < 1200; // Define medium screen breakpoint
 
-    // Handle quantity change for items
-    const handleQuantityChange = (id, increment) => {
+    // 处理本地数量更改（仅在本地管理）
+    const handleLocalQuantityChange = (id, increment) => {
         setQuantities((prev) => ({
             ...prev,
-            [id]: Math.max(1, (prev[id] || 1) + increment), // Ensure quantity doesn't go below 1
+            [id]: Math.max(0, (prev[id] || 0) + increment),
         }));
     };
+
+    // 处理将商品加入购物车
+    const handleQuantityChange = (item) => {
+        const quantity = quantities[item.id] || 0;
+        setInfo('Successfully added to cart');
+        setOpenSnackbar(true);
+
+        if (quantity === 0) {
+            setOpenSnackbar(true);
+            setInfo('Quantity cannot be 0');
+            return;
+        }
+
+        // 使用 Redux dispatch 添加商品到购物车
+        dispatch(addItem({ ...item, quantity }));
+    };
+
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+        setInfo('')
+    };
+
+
 
     // Display loading spinner if items are still being fetched
     if (loading) {
@@ -95,45 +140,59 @@ const Shopping = () => {
     };
 
     // Function to render each item card to avoid code duplication
+    // renderCard 函数内
     const renderCard = (item) => (
         <Card
             sx={{
                 boxShadow: 4,
                 borderRadius: 3,
                 transition: '0.3s',
-                '&:hover': { boxShadow: 8 }, // Add hover effect
-                backgroundColor: 'white', // Always white background
-                color: 'black', // Always black text
+                '&:hover': { boxShadow: 8 },
+                backgroundColor: 'white',
+                color: 'black',
             }}
         >
             <CardMedia
                 component="img"
                 height="150"
-                image={`/${item.image}`} // Item image
+                image={`/${item.image}`}
                 alt={item.name}
                 sx={{ objectFit: 'contain' }}
             />
             <CardContent>
                 <Typography gutterBottom variant="h6" component="div" sx={{ fontSize: { xs: '0.9rem' }, color: 'black' }}>
-                    {item.name} {/* Display item name */}
+                    {item.name}
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: { xs: '0.7rem' }, color: 'gray' }}>
-                    Price: ${item.price} {/* Display item price */}
+                    Price: ${item.price}
                 </Typography>
                 <Typography variant="body2" sx={{ mt: 1, fontSize: { xs: '0.6rem' }, color: 'gray' }}>
-                    {item.description?.substring(0, 60)}... {/* Display item description with a limit */}
+                    {item.description?.substring(0, 60)}...
                 </Typography>
             </CardContent>
             <CardActions sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton onClick={() => handleQuantityChange(item.id, -1)}>
-                        <Remove sx={{ fontSize: '0.8rem', color: 'black' }} /> {/* Ensure minus icon is black */}
+                    <IconButton
+                        sx={{
+                        fontSize: '0.8rem',
+                        color: 'black',
+                        transition: '0.3s',
+                        '&:hover': {
+                            color: 'green',
+                            transform: 'scale(1.1)',
+                        },
+                        '&:active': {
+                            transform: 'scale(0.9)',
+                        },
+                    }}
+                                onClick={() => handleLocalQuantityChange(item.id, -1)}>
+                        <Remove sx={{ fontSize: '0.8rem', color: 'black' }} />
                     </IconButton>
                     <TextField
-                        value={quantities[item.id] || 1} // Display quantity
+                        value={quantities[item.id] || 0} // Display quantity from local state
                         inputProps={{
                             readOnly: true,
-                            style: { textAlign: 'center', width: '.9rem', color: 'black' }, // Ensure input text is black
+                            style: { textAlign: 'center', width: '.9rem', color: 'black' },
                         }}
                         variant="outlined"
                         size="small"
@@ -141,40 +200,106 @@ const Shopping = () => {
                             mx: 1,
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: 'black', // Ensure border is black
+                                    borderColor: 'black',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: 'black', // Ensure hover border remains black
+                                    borderColor: 'black',
                                 },
                                 '&.Mui-focused fieldset': {
-                                    borderColor: 'black', // Ensure focused border is black
+                                    borderColor: 'black',
                                 },
                             },
                         }}
                     />
-                    <IconButton onClick={() => handleQuantityChange(item.id, 1)}>
-                        <Add sx={{ fontSize: '0.8rem', color: 'black' }} /> {/* Ensure plus icon is black */}
+                    <IconButton
+                        onClick={() => handleLocalQuantityChange(item.id, 1)}
+                        sx={{
+                            fontSize: '0.8rem',
+                            color: 'black',
+                            transition: '0.3s',
+                            '&:hover': {
+                                color: 'green',
+                                transform: 'scale(1.1)',
+                            },
+                            '&:active': {
+                                transform: 'scale(0.9)',
+                            },
+                        }}
+                    >
+                        <Add sx={{ fontSize: '0.8rem' }} />
                     </IconButton>
+
                 </Box>
-                <IconButton sx={{ padding: '4px' }}>
-                    <Badge badgeContent={quantities[item.id] || 0} sx={{color:'blue'}}> {/* Badge with quantity */}
-                        <AddShoppingCartIcon sx={{ fontSize: '2rem', color:"blue"}} />
+                <IconButton
+                    sx={{
+                        padding: '4px',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            transform: 'scale(1.1)',
+                        },
+                        '&:active': {
+                            transform: 'scale(0.95)',
+                        },
+                    }}
+                    onClick={() => handleQuantityChange(item)}
+                >
+                    <Badge
+                        badgeContent={quantities[item.id] || 0}
+                        sx={{
+                            '& .MuiBadge-badge': {
+                                color: 'white',
+                                backgroundColor: 'red',
+                                fontSize: '0.75rem',
+                                minWidth: '20px',
+                                height: '20px',
+                            },
+                        }}
+                    >
+                        <AddShoppingCartIcon
+                            sx={{
+                                fontSize: '2rem',
+                                color: 'blue',
+                                transition: 'color 0.3s ease',
+                                '&:hover': {
+                                    color: '#0056b3',
+                                },
+                            }}
+                        />
                     </Badge>
                 </IconButton>
+
+
             </CardActions>
         </Card>
     );
-
 
 
     // Desktop layout logic, with sliding arrows for navigation
     const desktopLayout = (
         <Box sx={{ position: 'relative', padding: 2, overflow: 'hidden' }}>
             <IconButton
-                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem',color: theme.palette.warning.dark,}}
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: 0,
+                    zIndex: 10,
+                    transform: 'translateY(-50%)',
+                    fontSize: '2rem',
+                    color: theme.palette.warning.dark,
+                    transition: '0.3s',
+                    '&:hover': {
+                        color: theme.palette.warning.main,
+                        transform: 'translateY(-50%) scale(1.1)',
+                    },
+                    '&:active': {
+                        transform: 'translateY(-50%) scale(0.9)',
+                    },
+                }}
                 onClick={handlePrev}
             >
-                <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }}/>
+                <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }} />
             </IconButton>
 
             <Grid container spacing={4} sx={{ padding: { sm: 3, md: 5, lg: 9, xl: 20 } }}>
@@ -190,11 +315,28 @@ const Shopping = () => {
             </Grid>
 
             <IconButton
-                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-50%)', fontSize: '2rem', color: theme.palette.warning.dark,}}
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: 0,
+                    zIndex: 10,
+                    transform: 'translateY(-50%)',
+                    fontSize: '2rem',
+                    color: theme.palette.warning.dark,
+                    transition: '0.3s',
+                    '&:hover': {
+                        color: theme.palette.warning.main,
+                        transform: 'translateY(-50%) scale(1.1)',
+                    },
+                    '&:active': {
+                        transform: 'translateY(-50%) scale(0.9)',
+                    },
+                }}
                 onClick={handleNext}
             >
-                <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }}/>
+                <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }} />
             </IconButton>
+
         </Box>
     );
 
@@ -202,10 +344,26 @@ const Shopping = () => {
     const mobileLayout = (
         <Box sx={{ position: 'relative', padding: '20px 0', overflow: 'hidden', width: '100vw' }}>
             <IconButton
-                sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: theme.palette.warning.dark, }}
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: 0,
+                    zIndex: 10,
+                    transform: 'translateY(-25%)',
+                    fontSize: '2rem',
+                    color: theme.palette.warning.dark,
+                    transition: '0.3s',
+                    '&:hover': {
+                        color: theme.palette.warning.dark,
+                        transform: 'translateY(-25%) scale(1.1)',
+                    },
+                    '&:active': {
+                        transform: 'translateY(-50%) scale(0.9)',
+                    },
+                }}
                 onClick={handlePrev}
             >
-                <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }}/>
+                <ArrowCircleLeftRoundedIcon sx={{ fontSize: '4rem' }} />
             </IconButton>
 
             <SwipeableViews
@@ -235,10 +393,26 @@ const Shopping = () => {
             </SwipeableViews>
 
             <IconButton
-                sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 10, transform: 'translateY(-25%)', fontSize: '2rem', color: theme.palette.warning.dark,}}
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: 0,
+                    zIndex: 10,
+                    transform: 'translateY(-25%)',
+                    fontSize: '2rem',
+                    color: theme.palette.warning.dark,
+                    transition: '0.3s',
+                    '&:hover': {
+                        color: theme.palette.warning.dark,
+                        transform: 'translateY(-25%) scale(1.1)',
+                    },
+                    '&:active': {
+                        transform: 'translateY(-50%) scale(0.9)',
+                    },
+                }}
                 onClick={handleNext}
             >
-                <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }}/>
+                <ArrowCircleRightRoundedIcon sx={{ fontSize: '4rem' }} />
             </IconButton>
         </Box>
     );
@@ -248,8 +422,8 @@ const Shopping = () => {
             sx={{ paddingBottom: 20, overflow: "hidden",
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
-        }}> {/* Wrap the whole page container */}
-            <Divider sx={{ backgroundColor: theme.palette.divider,marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto', height: "2px"}} />
+            }}> {/* Wrap the whole page container */}
+            <Divider sx={{ backgroundColor: theme.palette.divider, marginBottom: 10, marginTop: 10, width: '75%', marginX: 'auto', height: "2px" }} />
 
             {/* Add the header content */}
             <Box sx={{ paddingTop: 4, textAlign: 'center' }}>
@@ -266,7 +440,7 @@ const Shopping = () => {
                 <Typography
                     variant="body1"
                     sx={{
-                        color: theme.palette.text.primary ,
+                        color: theme.palette.text.primary,
                         marginTop: 2,
                         fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem', lg: '1.6rem', xl: '1.8rem' } // Responsive body1 text
                     }}
@@ -293,6 +467,56 @@ const Shopping = () => {
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
                 {desktopLayout}
             </Box>
+            {/* Modal for quantity 0 warning */}
+            <Modal
+                open={openSnackbar}
+                onClose={handleCloseSnackbar}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: { xs: 280, sm: 350, md: 400, lg: 500 },
+                        bgcolor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        border: 'none',
+                        borderRadius: 2,
+                        boxShadow: 24,
+                        p: 4,
+                        textAlign: 'center',
+                        backdropFilter: 'blur(10px)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }}
+                >
+                    <Typography id="modal-title" variant="h6" component="h2"
+                                sx={{
+                                    fontSize: { xs: '1rem', sm: '1.2rem', md: '1.5rem', lg: '1.8rem' } // 响应式调整字体大小
+                                }}>
+                        {info}
+                    </Typography>
+                    <Button onClick={handleCloseSnackbar} sx={{
+                        mt: 2,
+                        backgroundColor: theme.palette.mode === 'dark' ? '#b97a00' : '#7219d2',
+                        color: '#fff', // 文本颜色为白色
+                        '&:hover': {
+                            backgroundColor: theme.palette.mode === 'dark' ? 'rgb(185,122,0)' : '#7219d2',
+                        },
+                        '&:active': {
+                            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(155,121,1,0.72)' : '#511194',
+                        },
+                        boxShadow: 'none',
+                        borderRadius: '8px',
+                        padding: '8px 16px',
+                    }} variant="contained">
+                        Close
+                    </Button>
+                </Box>
+            </Modal>
+
         </Box>
     );
 };

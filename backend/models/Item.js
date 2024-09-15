@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuid } = require('uuid');
 
 // Define schema for items
 const itemSchema = new mongoose.Schema({
     id: {
         type: String,
-        default: uuidv4, // Automatically generate UUID
+        default: uuid, // Automatically generate UUID
         unique: true,
     },
     name: {
@@ -20,6 +20,10 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    category: {
+        type: String,
+        required: true,
+    }
 });
 
 // Create Item model
