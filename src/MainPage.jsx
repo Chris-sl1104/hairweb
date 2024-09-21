@@ -144,12 +144,14 @@ export default function MainPage() {
                         @Fitzroy
                     </Box>
                 </Typography>
+                <br />
 
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: isMobile ? 'column' : 'row', // Column layout on mobile, row layout on desktop
                         justifyContent: 'center',
+                        PaddingTop: 4,
                         alignItems: 'center',
                         gap: 2, // Button spacing
                         flexWrap: 'wrap', // Ensures responsiveness on smaller screens
@@ -219,24 +221,30 @@ export default function MainPage() {
                         Book Now
                     </Button>
                 </Box>
-
                 {/* About This Website's Developer */}
-                <Typography
-                    variant="h6"
+                {10  && (<Typography
+                    variant="body1"
                     sx={{
                         marginTop: 4,
                         color: 'white',
                         textAlign: 'center',
+                        transition: 'transform 0.3s ease',
                         cursor: 'pointer',
                         textDecoration: 'underline',
+                        transform: isMobile ? 'translateY(100px)' : 'none',
                         '&:hover': {
-                            color: 'black',
+                            transform: isMobile ? 'translateY(100px) scale(1.1)':'scale(1.1)',
                         },
                     }}
                     onClick={() => navigate('/developer-info')}
                 >
                     About This Website's Developer
-                </Typography>
+                </Typography>)}
+
+
+
+
+
 
             </Box>
         </Box>

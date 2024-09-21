@@ -104,7 +104,10 @@ export default function VideoShow() {
                                 {videoPlayed[index] ? (
                                     <iframe
                                         src={videoUrl}
-                                        allow="autoplay; encrypted-media"
+                                        allow="autoplay; encrypted-media; fullscreen"
+                                        allowFullScreen
+                                        webkitallowfullscreen="true" // Safari
+                                        mozallowfullscreen="true" // Firefox
                                         style={{
                                             border: 'none',
                                             position: 'absolute',
@@ -142,7 +145,9 @@ export default function VideoShow() {
                                                 zIndex: 1,
                                                 color: 'white',
                                                 opacity: 1,
+                                                cursor: 'pointer',
                                             }}
+                                            onClick={() => handleImageClick(index)}
                                         >
                                             <PlayArrowIcon
                                                 sx={{
@@ -150,7 +155,9 @@ export default function VideoShow() {
                                                     color: 'white', // 图标的默认颜色
                                                     zIndex: 10,
                                                     position: 'relative',
+                                                    cursor: 'pointer',
                                                 }}
+                                                onClick={() => handleImageClick(index)}
                                             />
 
                                             <Box

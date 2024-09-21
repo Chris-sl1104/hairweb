@@ -44,7 +44,7 @@ export default function Welcome() {
                             fontFamily: 'Antic Didone, serif',  // Use Antic Didone font
                             lineHeight: 1.6,  // Increase line height for better readability
                             margin: { xs: "1rem", md: "2rem" },
-                            color: theme.palette.text.secondary, // Use secondary text color for better contrast
+                            color: theme.palette.text.primary, // Use secondary text color for better contrast
                         }}
                     >
                         Welcome to Kieu's Hair Salon! Nestled in the vibrant heart of Fitzroy,

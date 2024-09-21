@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // 定义初始状态对象，包含一个 mode 属性，初始值为 'dark'
 // 这个状态将用于控制应用的主题（'light' 或 'dark'）
 const initialState = {
-    mode: 'dark',  // 初始模式设为 'dark'
+    mode: 'light',  // 初始模式设为 'dark'
 };
 
 // 使用 createSlice 创建一个名为 'theme' 的状态切片（slice）

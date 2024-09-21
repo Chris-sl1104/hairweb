@@ -8,7 +8,7 @@ export default function About() {
 
     return (
         <Box
-            className="welcomeClass"
+
             sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -33,7 +33,7 @@ export default function About() {
                         }}
                     >
                         <Typography
-                            variant="h2"
+                            variant="h3"
                             className="font-antic-didone"
                             sx={{
                                 fontFamily: 'Antic Didone, serif',
@@ -50,11 +50,15 @@ export default function About() {
                             className="font-antic-didone"
                             sx={{
                                 fontFamily: 'Antic Didone, serif',
+                                lineHeight: 1.6,
+                                fontWeight: 100,
                                 textAlign: { xs: 'center', md: 'left' }, // Center-align text on small screens, left-align on large screens
-                                color: theme.palette.text.secondary, // Dynamic secondary text color based on theme
+                                color: theme.palette.text.primary, // Dynamic secondary text color based on theme
                             }}
+
+
                         >
-                            <p>
+
                                 At Kieu's Hair Salon, we’re more than just a place for haircuts—we’re a hub
                                 of creativity and personal expression in the heart of Fitzroy. Established in
                                 1998, we’ve built our reputation on delivering exceptional, tailored services that
@@ -63,7 +67,7 @@ export default function About() {
                                 you’re seeking a fresh transformation or maintaining your signature look, our
                                 skilled team is dedicated to making you feel confident, stylish, and at home
                                 with every visit.
-                            </p>
+
                         </Typography>
                     </Box>
                 </Grid>

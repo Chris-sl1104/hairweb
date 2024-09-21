@@ -38,8 +38,9 @@ const ResponsiveAppBar = () => {
             <AppBar
                 position="fixed"
                 sx={{
-                    backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)',
+                    backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)',
                     backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
                     transition: 'background-color 0.3s ease',
                     boxShadow: 'none',
                     zIndex: (theme) => theme.zIndex.drawer + 1,
