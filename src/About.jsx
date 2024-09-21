@@ -77,7 +77,7 @@ export default function About() {
                     >
                         <Box
                             component="img"
-                            src="./src/About.jpg" // Please replace with the actual image URL
+                            src="/About.jpg"
                             alt="About Us"
                             sx={{
                                 width: '100%',

@@ -40,7 +40,7 @@ export default function Footer() {
                         </a>
                     </Typography>
                     <Typography variant="body2" sx={{ marginTop: '10px' }}>
-                        <strong>ABN:</strong> 12 345 678 901
+                        <strong>ABN:</strong> 77 327 899 818
                     </Typography>
                 </Grid>
 
@@ -90,12 +90,12 @@ export default function Footer() {
                     }}
                 >
                     <img
-                        src="src/flag1.png"
+                        src="/flag1.png"
                         alt="Aboriginal Flag"
                         style={{ width: '40px', height: '25px', marginRight: '15px' }}
                     />
                     <img
-                        src="src/flag2.jpg"
+                        src="/flag2.jpg"
                         alt="Torres Strait Islander Flag"
                         style={{ width: '40px', height: '25px' }}
                     />

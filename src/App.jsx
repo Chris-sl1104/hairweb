@@ -23,6 +23,7 @@ import { ThemeProvider, createTheme } from '@mui/material';
 import FAQPage from "./FAQPage.jsx";
 import ShoppingPage from "./ShoppingPage.jsx";
 import Shopcheckout from "./Shopcheckout.jsx";
+import Deps from "./Deps.jsx";
 
 function App() {
     const mode = useSelector((state) => state.theme.mode); // Get Redux mode
@@ -50,6 +51,8 @@ function App() {
                     <Route path="/faq" element={<FAQPage />} />
                     <Route path="/shopping" element={<ShoppingPage />} />
                     <Route path="/shopcheckout" element={<Shopcheckout />} />
+                    <Route path="/developer-info" element={<Deps />} />
+
                 </Routes>
             </Router>
         </ThemeProvider>

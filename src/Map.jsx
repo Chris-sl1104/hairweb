@@ -23,7 +23,7 @@ const Map = () => {
 
     useEffect(() => {
         // Fetch the Google Maps API key from the server
-        fetch('http://192.168.0.108:5000/api/get-maps-api-key')
+        fetch('https://kieuhairdesigner.com.au:5000/api/get-maps-api-key')
             .then((response) => response.json())
             .then((data) => {
                 setApiKey(data.apiKey);

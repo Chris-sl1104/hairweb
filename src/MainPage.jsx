@@ -8,6 +8,7 @@ import { useTheme } from '@mui/material/styles';
 
 
 export default function MainPage() {
+    const version = Date.now();
     const theme = useTheme();
     function isDarkMode() {
         const theme = useTheme(); // Access the current theme
@@ -43,7 +44,7 @@ export default function MainPage() {
             {!isVideoLoaded && (
                 <Box
                     component="img"
-                    src="src/coverVideoPlaceholder.png" // Path to the placeholder image
+                    src={isMobile ? `/coverVideoPlaceholder.png?v=${version}` : `/coverDesktopPlaceholder.png?v=${version}`} // Path to the placeholder image with version to avoid cache
                     alt="Loading Placeholder"
                     sx={{
                         position: 'absolute',
@@ -53,34 +54,52 @@ export default function MainPage() {
                         height: '100vh',
                         objectFit: 'cover',
                         zIndex: 0,
-                        transform: isMobile ? 'none' : 'rotate(90deg) scaleX(-1)',
+                        transform: 'none',
                     }}
                 />
             )}
 
-            {/* Video element */}
-            <Box
-                component="video"
-                ref={videoRef} // Get the video element through ref
-                src="src/coverVideo.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                onLoadedData={handleVideoLoaded}
-                sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: isMobile ? 'translate(-50%, -50%)' : 'translate(-50%, -50%) rotate(90deg) scaleX(-1)',
-                    width: isMobile ? '100vw' : '100vh',
-                    height: isMobile ? '100vh' : '100vw',
-                    objectFit: 'cover',
-                    zIndex: 1,
-                    opacity: isVideoLoaded ? 1 : 0,
-                    transition: 'opacity 0.5s ease',
-                }}
-            />
+            {/* Video or placeholder based on device type */}
+            {isMobile ? (
+                // If it is mobile, show the image
+                <Box
+                    component="img"
+                    src={`/coverVideoPlaceholder.png?v=${version}`} // Mobile placeholder image with version
+                    alt="Mobile Placeholder"
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        objectFit: 'cover',
+                    }}
+                />
+            ) : (
+                // If it is desktop, show the video
+                <Box
+                    component="video"
+                    ref={videoRef} // Get the video element through ref
+                    src={`/coverVideo.mp4?v=${version}`} // Video source with version to avoid cache
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    onLoadedData={handleVideoLoaded}
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%) rotate(90deg) scaleX(-1)',
+                        width: '100vh',
+                        height: '100vw',
+                        objectFit: 'cover',
+                        zIndex: 1,
+                        opacity: isVideoLoaded ? 1 : 0,
+                    }}
+                />
+            )}
+
 
             {/* Semi-transparent overlay */}
             <Box
@@ -119,51 +138,106 @@ export default function MainPage() {
                     }}
                 >
                     <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
-                        Hair Salon
+                        HairDesign
                     </Box>
                     <Box component="span" sx={{ display: { sx: 'block', md: 'inline' } }}>
                         @Fitzroy
                     </Box>
                 </Typography>
 
-                <Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: isMobile ? 'column' : 'row', // Column layout on mobile, row layout on desktop
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: 2, // Button spacing
+                        flexWrap: 'wrap', // Ensures responsiveness on smaller screens
+                    }}
+                >
                     <Button
                         variant="contained"
-                        color="secondary"
                         size="large"
                         sx={{
-                            marginRight: 2,
-                            background: 'linear-gradient(45deg, #FF4081, #FF80AB)',
-                            boxShadow: '0px 4px 15px rgba(255, 64, 129, 0.5)',
+                            backgroundColor: 'black',
+                            color: 'white',
+                            padding: '10px 30px',
+                            fontSize: '16px',
+                            borderRadius: '30px',
+                            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                             '&:hover': {
-                                transform: 'scale(1.1)',
-                                boxShadow: '0px 6px 20px rgba(255, 64, 129, 0.7)',
+                                transform: 'scale(1.05)',
+                                boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.7)',
+                            },
+                        }}
+                        onClick={() => navigate('/shopping')}
+                    >
+                        Shop Now
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        size="large"
+                        sx={{
+                            backgroundColor: 'white',
+                            color: 'black',
+                            border: '2px solid black',
+                            padding: '10px 30px',
+                            fontSize: '16px',
+                            borderRadius: '30px',
+                            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
+                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                            '&:hover': {
+                                transform: 'scale(1.05)',
+                                boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.7)',
+                            },
+                        }}
+                        onClick={() => navigate('/services')}
+                    >
+                        Service Menu
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        size="large"
+                        sx={{
+                            backgroundColor: 'black',
+                            color: 'white',
+                            padding: '10px 30px',
+                            fontSize: '16px',
+                            borderRadius: '30px',
+                            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.5)',
+                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                            '&:hover': {
+                                transform: 'scale(1.05)',
+                                boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.7)',
                             },
                         }}
                         onClick={() => navigate('/booking')}
                     >
                         Book Now
                     </Button>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        size="large"
-                        sx={{
-                            backgroundColor: 'white',
-                            color: '#FF4081',
-                            border: '2px solid #FF4081',
-                            boxShadow: '0px 4px 15px rgba(255, 64, 129, 0.5)',
-                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                            '&:hover': {
-                                transform: 'scale(1.1)',
-                                boxShadow: '0px 6px 20px rgba(255, 64, 129, 0.7)',
-                            },
-                        }}
-                    >
-                        View More
-                    </Button>
                 </Box>
+
+                {/* About This Website's Developer */}
+                <Typography
+                    variant="h6"
+                    sx={{
+                        marginTop: 4,
+                        color: 'white',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        '&:hover': {
+                            color: 'black',
+                        },
+                    }}
+                    onClick={() => navigate('/developer-info')}
+                >
+                    About This Website's Developer
+                </Typography>
+
             </Box>
         </Box>
     );

@@ -63,7 +63,7 @@ export default function Welcome() {
                 }}>
                     <Box
                         component="img"
-                        src="src/outside.jpeg"
+                        src="/outside.jpeg"
                         alt="Welcome"
                         sx={{
                             width: '100%',

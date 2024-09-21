@@ -40,7 +40,7 @@ export default function Review() {
                 position: 'relative',
                 width: '100%',
                 height: 'auto',
-                backgroundImage: `url(src/Shampoo.jpg)`,
+                backgroundImage: `url(/Shampoo.jpg)`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',

@@ -60,13 +60,13 @@ const ResponsiveAppBar = () => {
                             textDecoration: 'none',
                             textAlign: 'left',
                             fontSize: {
-                                xs: '1.2rem',
-                                sm: '1.3rem',
-                                md: '1.4rem',
+                                xs: '0.9rem',
+                                sm: '1.2rem',
+                                md: '1.3rem',
                             },
                         }}
                     >
-                        Kieu's Hair Salon
+                        Kieu Hair Designer
                     </Typography>
 
                     {/* Display navigation items on larger screens */}

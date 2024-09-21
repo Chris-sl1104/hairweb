@@ -46,7 +46,7 @@ const ShoppingPage = () => {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await axios.get('http://192.168.0.108:5000/items');
+                const response = await axios.get('https://kieuhairdesigner.com.au:5000/items');
                 setItems(response.data);
                 setLoading(false);
 
@@ -124,7 +124,7 @@ const ShoppingPage = () => {
             <CardMedia
                 component="img"
                 height="150"
-                image={`/${item.image}`}
+                image={item.image}
                 alt={item.name}
                 sx={{ objectFit: 'contain' }}
             />

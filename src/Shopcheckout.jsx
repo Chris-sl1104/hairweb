@@ -109,7 +109,7 @@ const ContactForm = () => {
             }));
 
             // Submit form data along with the reCAPTCHA tokens
-            const response = await fetch('http://192.168.0.108:5000/send-email', {
+            const response = await fetch('https://kieuhairdesigner.com.au:5000/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ const ContactForm = () => {
                     {/* Top Image */}
                     <Box
                         sx={{
-                            backgroundImage: 'url("src/contact.png")',
+                            backgroundImage: 'url("/contact.png")',
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",

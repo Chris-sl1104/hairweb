@@ -10,7 +10,7 @@ export default function Zitzroy() {
                 position: 'relative',
                 width: '100%', // set to the viewport width
                 height: {xs: "50vh", sm: '60vh', md: "70vh"}, // set to 60% of the full screen height
-                backgroundImage: `url(src/Fitzroy.jpg)`, // background image path
+                backgroundImage: `url(/Fitzroy.jpg)`, // background image path
                 backgroundSize: 'cover', // background image covers the entire container
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',

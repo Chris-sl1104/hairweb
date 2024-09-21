@@ -10,17 +10,23 @@ const nodemailer = require('nodemailer');
 const Booking = require('./models/Booking.js');
 const app = express();
 const router = express.Router();
+const fs = require('fs');
+const https = require('https');
 
 // Allow all sources to access the API
-app.use(cors());
 app.use(express.json()); // Parse JSON request
 app.use(bodyParser.json());
 
 // Connect MongoDB
-mongoose.connect('mongodb://localhost:27017/shoppingDB')
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB 连接成功'))
     .catch((err) => console.error('MongoDB 连接错误:', err));
 
+app.use(cors({
+    origin: 'https://kieuhairdesigner.com.au',
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
 
 // Get the booked time
 router.get('/bookings', async (req, res) => {
@@ -335,6 +341,14 @@ app.get('/items', async (req, res) => {
 
 
 
-// Start server
+
+const sslOptions = {
+    key: fs.readFileSync('/home/ec2-user/hairweb/hairweb/backend/certs/privkey.pem'),
+    cert: fs.readFileSync('/home/ec2-user/hairweb/hairweb/backend/certs/fullchain.pem')
+};
+
+// 配置 HTTPS 服务器
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => console.log(`The server is running on port ${PORT}`));
+https.createServer(sslOptions, app).listen(PORT, '0.0.0.0', () => {
+    console.log(`The server is running on HTTPS port ${PORT}`);
+});

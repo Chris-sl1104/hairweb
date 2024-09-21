@@ -58,7 +58,7 @@ const Shopping = () => {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await axios.get('http://192.168.0.108:5000/items'); // Ensure the backend is running and returning items
+                const response = await axios.get('https://kieuhairdesigner.com.au:5000/items'); // Ensure the backend is running and returning items
                 setItems(response.data); // Set the items from API
                 setLoading(false); // Set loading to false when data is fetched
             } catch (error) {
@@ -155,7 +155,7 @@ const Shopping = () => {
             <CardMedia
                 component="img"
                 height="150"
-                image={`/${item.image}`}
+                image={item.image}
                 alt={item.name}
                 sx={{ objectFit: 'contain' }}
             />

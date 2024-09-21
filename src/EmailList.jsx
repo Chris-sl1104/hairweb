@@ -87,7 +87,7 @@ export default function EmailList() {
             const token = await window.grecaptcha.enterprise.execute('6LfsEToqAAAAAMC8N5ActNXZ5Q6mUhywhF83ys39', { action: 'submit' });
 
             // Submit form data along with the reCAPTCHA tokens
-            const response = await fetch('http://192.168.0.108:5000/send-email', {
+            const response = await fetch('https://kieuhairdesigner.com.au:5000/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export default function EmailList() {
                 position: 'relative',
                 width: 'auto',
                 height: '100vh', // Full viewport height
-                backgroundImage: `url(src/emailimg.png)`, // Background image path
+                backgroundImage: `url(emailimg.png)`, // Background image path
                 backgroundSize: 'cover', // Make sure the background covers the whole container
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',

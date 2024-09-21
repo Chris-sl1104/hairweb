@@ -120,12 +120,12 @@ const Checkout = () => {
             };
 
             // Submit the booking data to the backend, saving it in the database
-            const bookingResponse = await axios.post('http://192.168.0.108:5000/bookings', bookingData);
+            const bookingResponse = await axios.post('https://kieuhairdesigner.com.au:5000/bookings', bookingData);
 
             if (bookingResponse.status === 201) {
 
                 // After successful booking, send a confirmation email
-                const emailResponse = await axios.post('http://192.168.0.108:5000/send-email', {
+                const emailResponse = await axios.post('https://kieuhairdesigner.com.au:5000/send-email', {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
                     emailAddress: formData.email, // Use emailAddress to match the email sending logic

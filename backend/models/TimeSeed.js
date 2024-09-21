@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 const Booking = require('./Booking');  // 确保路径正确
 
 // 连接到 MongoDB
-mongoose.connect('mongodb://localhost:27017/shoppingDB', {
-
-})
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('MongoDB 已连接');
         seedData();
